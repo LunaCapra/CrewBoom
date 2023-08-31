@@ -13,8 +13,8 @@ The plugin allows for the following:
 
 ## Getting started
 
-To create a character mod you will need the [plugin]() as well as the [unity project]().  
-The documentation on how to use the unity project  can be found [here]().
+To create a character mod you will need the [plugin](https://github.com/SGiygas/BrcCustomCharacters/releases/download/Stable/BrcCustomCharacterPlugin.zip) as well as the [unity project](https://github.com/SGiygas/BrcCustomCharacters/releases/download/Stable/BrcCustomCharacterUnityKit.zip).  
+The documentation on how to use the unity project  can be found [here](https://github.com/SGiygas/BrcCustomCharacters/wiki).
 
 ## Installation
 
