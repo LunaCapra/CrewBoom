@@ -1,6 +1,10 @@
 # Bomb Rush Cyberfunk Custom Characters
 
-This is a repository for a BepInEx plugin to load custom characters for the game *Bomb Rush Cyberfunk*
+This is a repository for a BepInEx plugin to load custom characters for the game *Bomb Rush Cyberfunk*  
+
+Example:  
+![image](https://github.com/SGiygas/BrcCustomCharacters/assets/50772474/fea4c0ac-426a-4b71-bdcf-07616114072a)  
+![image](https://github.com/SGiygas/BrcCustomCharacters/assets/50772474/c65b95f0-c443-445a-a2fb-3a1b4d9eb5ba)
 
 ## Features
 
