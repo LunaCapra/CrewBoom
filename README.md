@@ -1,6 +1,6 @@
 # Bomb Rush Cyberfunk Custom Characters
 
-This is a repository for a BepInEx plugin to load custom characters for the game *Bomb Rush Cyberfunk*  
+This is a repository for a BepInEx plugin to load custom character replacements for the game *Bomb Rush Cyberfunk*  
 
 Example:  
 ![image](https://github.com/SGiygas/BrcCustomCharacters/assets/50772474/43ff8ca8-0805-4409-9547-234e26fcedda)
@@ -14,9 +14,12 @@ The plugin allows for the following:
 - Custom character graffiti
 - Custom character voice clips
 
-## Getting started
+## Getting started & Downloads
 
-To create a character mod you will need the [plugin](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v1.0.2/BrcCustomCharacterPlugin.zip) as well as the [Unity project](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v1.0.2/BrcCustomCharacterUnityKit.zip).  
+### [Plugin](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v1.0.2/BrcCustomCharacterPlugin.zip)
+### [Unity project](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v1.0.2/BrcCustomCharacterUnityKit.zip)
+
+To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.
 The documentation on how to use the Unity project  can be found [here](https://github.com/SGiygas/BrcCustomCharacters/wiki).
 
 ## Installation
