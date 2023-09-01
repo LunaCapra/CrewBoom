@@ -53,9 +53,5 @@ To install the plugin for BepInEx, follow these steps:
 
 This project was loosely based on [BRCModelReplacement](https://github.com/TheSmallBlue/BRC-ModelReplacement) by TheSmallBlue
 
-## Changes
-### 1.0.0
-Release
-
 ## License
 This project is licensed under the GNU General Public License v3.0
