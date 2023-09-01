@@ -127,7 +127,9 @@ namespace BrcCustomCharacters
                 if (offsetL != null && offsetR != null)
                 {
                     ___moveStyleProps.skateL.transform.SetLocalPositionAndRotation(offsetL.localPosition, offsetL.localRotation);
+                    ___moveStyleProps.skateL.transform.localScale = offsetL.localScale;
                     ___moveStyleProps.skateR.transform.SetLocalPositionAndRotation(offsetR.localPosition, offsetR.localRotation);
+                    ___moveStyleProps.skateR.transform.localScale = offsetR.localScale;
                 }
             }
         }

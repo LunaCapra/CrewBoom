@@ -21,25 +21,46 @@ namespace BrcCustomCharacters
                         switch (originalContainer.clipID)
                         {
                             case AudioClipID.VoiceDie:
-                                originalContainer.clips = voice.VoiceDie.ToArray();
+                                if (voice.VoiceDie.Count > 0)
+                                {
+                                    originalContainer.clips = voice.VoiceDie.ToArray();
+                                }
                                 break;
                             case AudioClipID.VoiceDieFall:
-                                originalContainer.clips = voice.VoiceDieFall.ToArray();
+                                if (voice.VoiceDieFall.Count > 0)
+                                {
+                                    originalContainer.clips = voice.VoiceDieFall.ToArray();
+                                }
                                 break;
                             case AudioClipID.VoiceTalk:
-                                originalContainer.clips = voice.VoiceTalk.ToArray();
+                                if (voice.VoiceTalk.Count > 0)
+                                {
+                                    originalContainer.clips = voice.VoiceTalk.ToArray();
+                                }
                                 break;
                             case AudioClipID.VoiceBoostTrick:
-                                originalContainer.clips = voice.VoiceBoostTrick.ToArray();
+                                if (voice.VoiceBoostTrick.Count > 0)
+                                {
+                                    originalContainer.clips = voice.VoiceBoostTrick.ToArray();
+                                }
                                 break;
                             case AudioClipID.VoiceCombo:
-                                originalContainer.clips = voice.VoiceCombo.ToArray();
+                                if (voice.VoiceCombo.Count > 0)
+                                {
+                                    originalContainer.clips = voice.VoiceCombo.ToArray();
+                                }
                                 break;
                             case AudioClipID.VoiceGetHit:
-                                originalContainer.clips = voice.VoiceGetHit.ToArray();
+                                if (voice.VoiceGetHit.Count > 0)
+                                {
+                                    originalContainer.clips = voice.VoiceGetHit.ToArray();
+                                }
                                 break;
                             case AudioClipID.VoiceJump:
-                                originalContainer.clips = voice.VoiceJump.ToArray();
+                                if (voice.VoiceJump.Count > 0)
+                                {
+                                    originalContainer.clips = voice.VoiceJump.ToArray();
+                                }
                                 break;
                         }
                     }
