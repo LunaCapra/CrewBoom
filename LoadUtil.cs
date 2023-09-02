@@ -1,5 +1,7 @@
 ﻿using Reptile;
+using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace BrcCustomCharacters;
 
@@ -25,6 +27,10 @@ public static class LoadUtil
     public static FieldInfo GetField(this object instance, string name)
     {
         return instance.GetType().GetField(name, bindingFlags);
+    }
+    public static T GetFieldValue<T>(this object instance, string name) where T : UnityEngine.Component
+    {
+        return GetField(instance, name).GetValue(instance) as T;
     }
     public static void SetField(this object instance, string name, object value)
     {

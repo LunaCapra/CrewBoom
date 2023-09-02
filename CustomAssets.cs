@@ -25,12 +25,12 @@ public static class CustomAssets
     {
         ASSET_PATH = Path.Combine(pluginPath, CHAR_ASSET_FOLDER);
 
-        string[] characterNames = System.Enum.GetNames(typeof(Characters));
-        _characterBundles = new AssetBundle[characterNames.Length];
-        _characterGraffiti = new Material[characterNames.Length];
+        string[] characterEnum = System.Enum.GetNames(typeof(Characters));
+        _characterBundles = new AssetBundle[characterEnum.Length];
+        _characterGraffiti = new Material[characterEnum.Length];
         _characterVoices = new Dictionary<SfxCollectionID, CustomCharacterVoice>();
 
-        for (int i = 0; i < characterNames.Length; i++)
+        for (int i = 0; i < characterEnum.Length; i++)
         {
             if (LoadCharacterBundle((Characters)i, out AssetBundle characterBundle))
             {
@@ -98,6 +98,8 @@ public static class CustomAssets
 
     public static bool HasCharacter(Characters character)
     {
+        //Catch Characters.NONE as it is -1
+        if (character == Characters.NONE) return false;
         return _characterBundles[(int)character] != null;
     }
 
