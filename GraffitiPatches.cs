@@ -51,8 +51,7 @@ namespace BrcCustomCharacters
                 }
             }
 
-            FieldInfo graffitiInfoField = LoadUtil.GetGraffitiInfo(__instance);
-            graffitiInfoField.SetValue(__instance, graffitiArtInfoRequest.asset);
+            __instance.SetField("graffitiArtInfo", graffitiArtInfoRequest.asset);
 
             yield break;
         }
@@ -77,7 +76,7 @@ namespace BrcCustomCharacters
                         if (___grafArt == ___graffitiArtInfo.FindByCharacter(character))
                         {
                             Material customGraffiti = CustomAssets.GetGraffiti(character);
-                            FieldInfo uiField = LoadUtil.GetField("ui", ___player);
+                            FieldInfo uiField = ___player.GetField("ui");
                             GameplayUI ui = (GameplayUI)uiField.GetValue(___player);
                             ui.graffitiTitle.text = string.Format("'{0}'", customGraffiti.mainTexture.name);
                         }

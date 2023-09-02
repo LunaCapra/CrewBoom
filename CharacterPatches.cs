@@ -26,7 +26,7 @@ namespace BrcCustomCharacters
             }
 
             //Invoke private add fbx method
-            LoadUtil.GetMethod(CharUtil.ADD_CHARACTER_METHOD, __instance).Invoke(__instance, new object[] { characterToLoad, fbxAsset });
+            __instance.InvokeMethod(CharUtil.ADD_CHARACTER_METHOD, new object[] { characterToLoad, fbxAsset });
         }
     }
 
@@ -53,7 +53,7 @@ namespace BrcCustomCharacters
             }
 
             //Invoke private add fbx method
-            LoadUtil.GetMethod(CharUtil.ADD_CHARACTER_METHOD, __instance).Invoke(__instance, new object[] { characterToLoad, fbxAsset });
+            __instance.InvokeMethod(CharUtil.ADD_CHARACTER_METHOD, new object[] { characterToLoad, fbxAsset });
 
             yield break;
         }
@@ -77,7 +77,7 @@ namespace BrcCustomCharacters
                 materialAsset = customMaterial;
             }
 
-            LoadUtil.GetMethod(CharUtil.ADD_MATERIAL_METHOD, __instance).Invoke(__instance, new object[] { characterToLoad, outfitIndex, materialAsset });
+            __instance.InvokeMethod(CharUtil.ADD_MATERIAL_METHOD, new object[] { characterToLoad, outfitIndex, materialAsset });
         }
     }
 
@@ -102,7 +102,7 @@ namespace BrcCustomCharacters
                 materialAsset = customMaterial;
             }
 
-            LoadUtil.GetMethod(CharUtil.ADD_MATERIAL_METHOD, __instance).Invoke(__instance, new object[] { characterToLoad, outfitIndex, materialAsset });
+            __instance.InvokeMethod(CharUtil.ADD_MATERIAL_METHOD, new object[] { characterToLoad, outfitIndex, materialAsset });
 
             yield break;
         }

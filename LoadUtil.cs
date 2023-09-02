@@ -13,18 +13,21 @@ public static class LoadUtil
         return (Assets)field?.GetValue(instance);
     }
 
-    public static MethodInfo GetMethod(string name, CharacterLoader instance)
+    public static MethodInfo GetMethod(this object instance, string name)
     {
         return instance.GetType().GetMethod(name, bindingFlags);
     }
-
-    public static FieldInfo GetGraffitiInfo(GraffitiLoader instance)
+    public static void InvokeMethod(this object instance, string name, params object[] parameters)
     {
-        return instance.GetType().GetField("graffitiArtInfo", bindingFlags);
+        instance.GetMethod(name).Invoke(instance, parameters);
     }
 
-    public static FieldInfo GetField(string name, object instance)
+    public static FieldInfo GetField(this object instance, string name)
     {
         return instance.GetType().GetField(name, bindingFlags);
+    }
+    public static void SetField(this object instance, string name, object value)
+    {
+        instance.GetField(name).SetValue(instance, value);
     }
 }
