@@ -50,6 +50,11 @@ To install the plugin for BepInEx, follow these steps:
 1. Navigate to your BepInEx installation for the game and open the `BepInEx/plugins/brcCustomCharacters/` folder
 2. Copy any character file (e.g. "metalhead") into the `CharAssets` folder
 
+## Building the project
+
+You will need to copy Bomb Rush Cyberfunk's `Assembly-CSharp.dll` into the `libs` folder of the project, as it is not provided.  
+It can be found at `<path to where your games are stored>\BombRushCyberfunk\Bomb Rush Cyberfunk_Data\Managed`
+
 ## Authors and acknowledgment
 - Programming and Unity SDK: SGiygas
 - Test model and assets: minty_cups
