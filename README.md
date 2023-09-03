@@ -54,7 +54,8 @@ To install the plugin for BepInEx, follow these steps:
 - Programming and Unity SDK: SGiygas
 - Test model and assets: minty_cups
 
-This project was loosely based on [BRCModelReplacement](https://github.com/TheSmallBlue/BRC-ModelReplacement) by TheSmallBlue
+This project was loosely based on [BRCModelReplacement](https://github.com/TheSmallBlue/BRC-ModelReplacement) by TheSmallBlue  
+and [BRCMods](https://github.com/Ikeiwa/BRCMods) by Ikeiwa & TheSmallBlue
 
 ## License
 This project is licensed under the GNU General Public License v3.0
