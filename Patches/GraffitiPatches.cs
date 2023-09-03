@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace BrcCustomCharacters
+namespace BrcCustomCharacters.Patches
 {
     [HarmonyPatch(typeof(Reptile.GraffitiLoader), nameof(Reptile.GraffitiLoader.LoadGraffitiArtInfo))]
     public class GraffitiLoadPatch

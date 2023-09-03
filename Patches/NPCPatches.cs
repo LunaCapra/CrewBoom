@@ -3,7 +3,7 @@ using Reptile;
 using HarmonyLib;
 using BepInEx.Logging;
 
-namespace BrcCustomCharacters
+namespace BrcCustomCharacters.Patches
 {
     [HarmonyPatch(typeof(Reptile.NPC), nameof(Reptile.NPC.InitSceneObject))]
     public class NPCInitPatch

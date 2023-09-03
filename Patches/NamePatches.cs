@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using Reptile;
-namespace BrcCustomCharacters
+namespace BrcCustomCharacters.Patches
 {
     [HarmonyPatch(typeof(TextMeshProGameTextLocalizer), nameof(TextMeshProGameTextLocalizer.GetCharacterName), typeof(Characters))]
     public class CharacterNamePatch

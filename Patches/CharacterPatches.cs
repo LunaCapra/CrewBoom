@@ -4,7 +4,7 @@ using Reptile;
 using System.Collections;
 using UnityEngine;
 
-namespace BrcCustomCharacters
+namespace BrcCustomCharacters.Patches
 {
     [HarmonyPatch(typeof(Reptile.CharacterLoader), "LoadFBXForCharacter")]
     public class LoadingPatch

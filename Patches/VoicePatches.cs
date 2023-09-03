@@ -3,7 +3,7 @@ using Reptile;
 using HarmonyLib;
 using System.Collections.Generic;
 
-namespace BrcCustomCharacters
+namespace BrcCustomCharacters.Patches
 {
     [HarmonyPatch(typeof(Reptile.SfxLibrary), "GenerateEnumDictionary")]
     public class VoiceLoadPatch

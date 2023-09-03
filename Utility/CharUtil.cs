@@ -1,4 +1,5 @@
 ﻿using Reptile;
+using System.Collections.Generic;
 
 namespace BrcCustomCharacters
 {
