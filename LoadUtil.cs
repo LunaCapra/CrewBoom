@@ -28,7 +28,7 @@ public static class LoadUtil
     {
         return instance.GetType().GetField(name, bindingFlags);
     }
-    public static T GetFieldValue<T>(this object instance, string name) where T : UnityEngine.Component
+    public static T GetFieldValue<T>(this object instance, string name, Type type) where T : UnityEngine.Component
     {
         return GetField(instance, name).GetValue(instance) as T;
     }

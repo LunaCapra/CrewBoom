@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Reptile;
 using HarmonyLib;
+using BepInEx.Logging;
 
 namespace BrcCustomCharacters
 {
@@ -12,61 +13,51 @@ namespace BrcCustomCharacters
             OutfitSwappableCharacter[] characters = __instance.GetComponentsInChildren<OutfitSwappableCharacter>(true);
             if (characters.Length > 0)
             {
-                foreach (OutfitSwappableCharacter npc in characters)
+                foreach (OutfitSwappableCharacter npcCharacter in characters)
                 {
-                    if (CustomAssets.HasCharacter(npc.Character))
+                    if (CustomAssets.HasCharacter(npcCharacter.Character))
                     {
-                        foreach (DynamicBone dynamicBone in npc.GetComponents<DynamicBone>())
+                        foreach (DynamicBone dynamicBone in npcCharacter.GetComponents<DynamicBone>())
                         {
                             dynamicBone.enabled = false;
                         }
 
-                        Animator animator = npc.GetComponentInChildren<Animator>(true);
+                        GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacter(npcCharacter.Character), npcCharacter.transform);
 
-                        GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacter(npc.Character), npc.transform);
-                        customCharacter.transform.localPosition = animator.transform.localPosition;
-                        customCharacter.transform.localRotation = animator.transform.localRotation;
-
+                        Animator originalAnimator = npcCharacter.GetComponentInChildren<Animator>(true);
                         Animator customAnimator = customCharacter.GetComponent<Animator>();
-                        customAnimator.runtimeAnimatorController = animator.runtimeAnimatorController;
-                        animator.avatar = customAnimator.avatar;
+                        customAnimator.runtimeAnimatorController = originalAnimator.runtimeAnimatorController;
 
-                        //Destroy original character stuff
-                        foreach (Transform child in animator.transform)
-                        {
-                            Object.Destroy(child.gameObject);
-                        }
+                        customCharacter.transform.localPosition = originalAnimator.transform.localPosition;
+                        customCharacter.transform.localRotation = originalAnimator.transform.localRotation;
 
-                        SkinnedMeshRenderer characterRenderer = customCharacter.GetComponentInChildren<SkinnedMeshRenderer>(true);
-                        npc.SetField("mainRenderer", characterRenderer);
+                        SkinnedMeshRenderer customRenderer = customCharacter.GetComponentInChildren<SkinnedMeshRenderer>(true);
+                        npcCharacter.SetField("mainRenderer", customRenderer);
 
-                        StoryBlinkAnimation blinkAnimation = animator.gameObject.GetComponent<StoryBlinkAnimation>();
-                        Object.Destroy(blinkAnimation);
-                        //blinkAnimation.mainRenderer = characterRenderer;
-                        //blinkAnimation.characterMesh = characterRenderer.sharedMesh;
+                        customCharacter.AddComponent<LookAtIKComponent>();
+                        customCharacter.AddComponent<DummyAnimationEventRelay>();
+                        //customCharacter.AddComponent<StoryBlinkAnimation>();
 
-                        foreach (Transform child in customCharacter.transform)
-                        {
-                            child.SetParent(animator.transform);
-                        }
+                        customCharacter.SetActive(originalAnimator.gameObject.activeSelf);
 
-                        customCharacter.SetActive(animator.gameObject.activeSelf);
+                        //Need to use DestroyImmediate because Destroy won't destroy it in time for the actual function running
+                        //to not find the destroyed object still
+                        Object.DestroyImmediate(originalAnimator.gameObject);
                     }
                 }
             }
             else if (CustomAssets.HasCharacter(___character))
             {
-                Animator animator = __instance.transform.GetComponentInChildren<Animator>(true);
-
                 GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacter(___character), __instance.transform);
-                customCharacter.transform.localPosition = animator.transform.localPosition;
-                customCharacter.transform.localRotation = animator.transform.localRotation;
 
+                Animator originalAnimator = __instance.transform.GetComponentInChildren<Animator>(true);
                 Animator customAnimator = customCharacter.GetComponent<Animator>();
-                customAnimator.runtimeAnimatorController = animator.runtimeAnimatorController;
-                animator.avatar = customAnimator.avatar;
+                customAnimator.runtimeAnimatorController = originalAnimator.runtimeAnimatorController;
 
-                SkinnedMeshRenderer originalRenderer = animator.GetComponentInChildren<SkinnedMeshRenderer>();
+                customCharacter.transform.localPosition = originalAnimator.transform.localPosition;
+                customCharacter.transform.localRotation = originalAnimator.transform.localRotation;
+
+                SkinnedMeshRenderer originalRenderer = originalAnimator.GetComponentInChildren<SkinnedMeshRenderer>();
                 if (originalRenderer)
                 {
                     SkinnedMeshRenderer characterRenderer = customAnimator.GetComponentInChildren<SkinnedMeshRenderer>();
@@ -77,23 +68,11 @@ namespace BrcCustomCharacters
                     }
                 }
 
-                //Destroy original character stuff
-                foreach (Transform child in animator.transform)
-                {
-                    if (child.GetComponentInChildren<Collider>() != null)
-                    {
-                        continue;
-                    }
-                    Object.Destroy(child.gameObject);
-                }
+                customCharacter.SetActive(originalAnimator.gameObject.activeSelf);
 
-                //Parent the new character to the animator
-                foreach (Transform child in customCharacter.transform)
-                {
-                    child.SetParent(animator.transform);
-                }
-
-                customCharacter.SetActive(animator.gameObject.activeSelf);
+                //Need to use DestroyImmediate because Destroy won't destroy it in time for the actual function running
+                //to not find the destroyed object still
+                Object.DestroyImmediate(originalAnimator.gameObject);
             }
         }
     }

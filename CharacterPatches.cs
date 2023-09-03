@@ -134,21 +134,4 @@ namespace BrcCustomCharacters
             }
         }
     }
-
-    [HarmonyPatch(typeof(TextMeshProGameTextLocalizer), nameof(TextMeshProGameTextLocalizer.GetCharacterName), typeof(Characters))]
-    public class CharacterNamePatch
-    {
-        public static void Postfix(Characters character, ref string __result)
-        {
-            if (CustomAssets.HasCharacter(character))
-            {
-                Transform nameObject = CustomAssets.GetCharacter(character).transform.Find("name");
-                if (nameObject)
-                {
-                    Transform name = nameObject.GetChild(0);
-                    __result = name.name;
-                }
-            }
-        }
-    }
 }
