@@ -97,7 +97,7 @@ namespace BrcCustomCharacters.Patches
             Animator customAnimator = customCharacter.GetComponent<Animator>();
 
             originalAnimator.avatar = customAnimator.avatar;
-            swappable.SetField("mainRenderer", customAnimator.GetComponentInChildren<SkinnedMeshRenderer>());
+            swappable.SetField("mainRenderer", customAnimator.GetComponentInChildren<SkinnedMeshRenderer>(true));
 
             foreach (Transform child in originalAnimator.transform)
             {
@@ -138,6 +138,11 @@ namespace BrcCustomCharacters.Patches
         }
         private static void SwapCutsceneOnlyCharacter(Transform root, Characters character)
         {
+            if (!CustomAssets.HasCharacter(character))
+            {
+                return;
+            }
+
             OutfitSwappableCharacter swappable = root.gameObject.AddComponent<OutfitSwappableCharacter>();
             swappable.SetField("character", character);
 
