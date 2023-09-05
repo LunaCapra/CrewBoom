@@ -16,18 +16,19 @@ The plugin allows for the following:
 
 ## Getting started & Downloads
 
-### [Plugin](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v1.0.3/BrcCustomCharacterPlugin.zip)
-### [Unity project](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v1.0.3/BrcCustomCharacterUnityKit.zip)
+### [Plugin](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v1.1.1/BrcCustomCharacterPlugin.zip)
+### [Unity project](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v1.1.1/BrcCustomCharacterUnityKit.zip)
 
 To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
-The documentation on how to use the Unity project  can be found [here](https://github.com/SGiygas/BrcCustomCharacters/wiki).
+
+### [Unity project documentation](https://github.com/SGiygas/BrcCustomCharacters/wiki)
 
 ## Installation
 
 This plugin requires [BepInEx](https://thunderstore.io/package/bbepis/BepInExPack/), a plugin framework for Unity games.
-The easiest way to get BepInEx going for Bomb Rush Cyberfunk is to use either the [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) or the [r2modman mod manager](https://thunderstore.io/package/ebkr/r2modman/).  
+The easiest way to get BepInEx going for Bomb Rush Cyberfunk is to use the [r2modman mod manager](https://thunderstore.io/package/ebkr/r2modman/).  
 
-*r2modman was used to test this plugin, so it is not guaranteed to work with the Thunderstore Mod Manager as well*
+*r2modman was used to test this plugin, so other solutions may not work*
 
 ### Using r2modman
 
