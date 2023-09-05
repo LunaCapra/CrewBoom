@@ -49,20 +49,26 @@ namespace BrcCustomCharacters.Patches
         }
     }
 
-    [HarmonyPatch(typeof(Reptile.CharacterVisual), nameof(Reptile.CharacterVisual.InitMoveStyleProps))]
+    [HarmonyPatch(typeof(Reptile.CharacterVisual), "SetInlineSkatesPropsMode")]
     public class InlineSkatesTransformPatch
     {
-        static void Postfix(
+        static void Postfix(CharacterVisual.MoveStylePropMode mode,
                             Transform ___footL,
                             Transform ___footR,
                             PlayerMoveStyleProps ___moveStyleProps,
                             CharacterVisual __instance)
         {
+            if (mode != CharacterVisual.MoveStylePropMode.ACTIVE)
+            {
+                return;
+            }
+
             Player player = __instance.GetComponentInParent<Player>(true);
             if (player == null)
             {
                 return;
             }
+
             Characters character = (Characters)player.GetField("character").GetValue(player);
             if (AssetDatabase.HasCharacter(character))
             {

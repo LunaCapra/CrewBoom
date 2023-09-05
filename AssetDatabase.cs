@@ -239,7 +239,7 @@ public static class AssetDatabase
             return false;
         }
 
-        characterObject = characterBundle.LoadAsset<GameObject>(_characterBundlePaths[id]).GetComponent<CharacterDefinition>();
+        characterObject = characterBundle.LoadAsset<GameObject>(_characterObjectNames[id]).GetComponent<CharacterDefinition>();
         return true;
     }
     public static bool GetCharacterReplacement(Characters character, out CharacterDefinition characterObject)
@@ -255,7 +255,6 @@ public static class AssetDatabase
     }
     public static bool HasCharacter(Characters character)
     {
-        List<Guid> characterIds = _characterReplacementIds[character];
-        return characterIds != null && characterIds.Count > 0;
+        return GetFirstOrConfigCharacterId(character, out Guid _);
     }
 }
