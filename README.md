@@ -9,7 +9,7 @@ Example:
 
 The plugin allows for the following:
 - Custom character name/title
-- Custom character model
+- Custom character model (gameplay & cutscenes)
 - Custom outfits (up to four)
 - Custom character graffiti
 - Custom character voice clips
