@@ -194,7 +194,9 @@ public static class AssetDatabase
     {
         guid = Guid.Empty;
 
-        if (_characterReplacementIds[character] == null || _characterReplacementIds[character].Count == 0)
+        if (!_characterReplacementIds.ContainsKey(character) ||
+            _characterReplacementIds[character] == null ||
+            _characterReplacementIds[character].Count == 0)
         {
             return false;
         }

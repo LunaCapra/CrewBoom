@@ -49,6 +49,30 @@ namespace BrcCustomCharacters.Patches
         }
     }
 
+    [HarmonyPatch(typeof(Reptile.CharacterConstructor), nameof(Reptile.CharacterConstructor.GetCharacterMaterials))]
+    public class GetMaterialsPatch
+    {
+        public static void Postfix(Material[,] __result)
+        {
+            for (int i = 0; i < __result.Length; i++)
+            {
+                Characters character = (Characters)i;
+                if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        Material material = characterObject.Outfits[j];
+                        if (characterObject.UseReptileShader)
+                        {
+                            material.shader = __result[i, j].shader;
+                        }
+                        __result[i, j] = material;
+                    }
+                }
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Reptile.CharacterVisual), "SetInlineSkatesPropsMode")]
     public class InlineSkatesTransformPatch
     {
