@@ -1,4 +1,5 @@
 ﻿using BepInEx.Logging;
+using BrcCustomCharactersLib;
 using HarmonyLib;
 using Reptile;
 using System.Collections;
@@ -13,16 +14,20 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(GraffitiArtInfo ___graffitiArtInfo)
         {
-            for (int i = 0; i < System.Enum.GetNames(typeof(Characters)).Length; i++)
+            for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
             {
                 Characters character = (Characters)i;
-                if (CustomAssets.HasCharacter(character) && CustomAssets.HasGraffiti(character))
+                if (CustomAssets.HasCharacter(character))
                 {
-                    GraffitiArt graffiti = ___graffitiArtInfo.FindByCharacter(character);
-                    Material customGraffiti = CustomAssets.GetGraffiti(character);
+                    CharacterDefinition characterDefinition = CustomAssets.GetCharacterReplacement(character);
 
-                    Texture mainTex = customGraffiti.mainTexture;
-                    graffiti.graffitiMaterial.mainTexture = mainTex;
+                    if (characterDefinition.Graffiti)
+                    {
+                        GraffitiArt graffiti = ___graffitiArtInfo.FindByCharacter(character);
+
+                        Texture mainTex = characterDefinition.Graffiti.mainTexture;
+                        graffiti.graffitiMaterial.mainTexture = mainTex;
+                    }
                 }
             }
         }
@@ -38,16 +43,20 @@ namespace BrcCustomCharacters.Patches
 
             GraffitiArtInfo info = (GraffitiArtInfo)graffitiArtInfoRequest.asset;
 
-            for (int i = 0; i < System.Enum.GetNames(typeof(Characters)).Length; i++)
+            for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
             {
                 Characters character = (Characters)i;
-                if (CustomAssets.HasCharacter(character) && CustomAssets.HasGraffiti(character))
+                if (CustomAssets.HasCharacter(character))
                 {
-                    GraffitiArt graffiti = info.FindByCharacter(character);
-                    Material customGraffiti = CustomAssets.GetGraffiti(character);
+                    CharacterDefinition characterDefinition = CustomAssets.GetCharacterReplacement(character);
 
-                    Texture mainTex = customGraffiti.mainTexture;
-                    graffiti.graffitiMaterial.mainTexture = mainTex;
+                    if (characterDefinition.Graffiti)
+                    {
+                        GraffitiArt graffiti = info.FindByCharacter(character);
+
+                        Texture mainTex = characterDefinition.Graffiti.mainTexture;
+                        graffiti.graffitiMaterial.mainTexture = mainTex;
+                    }
                 }
             }
 
@@ -68,17 +77,21 @@ namespace BrcCustomCharacters.Patches
         {
             if (setState == GraffitiGame.GraffitiGameState.SHOW_PIECE)
             {
-                for (int i = 0; i < System.Enum.GetNames(typeof(Characters)).Length; i++)
+                for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
                 {
                     Characters character = (Characters)i;
-                    if (CustomAssets.HasCharacter(character) && CustomAssets.HasGraffiti(character))
+                    if (CustomAssets.HasCharacter(character))
                     {
-                        if (___grafArt == ___graffitiArtInfo.FindByCharacter(character))
+                        CharacterDefinition characterDefinition = CustomAssets.GetCharacterReplacement(character);
+
+                        if (characterDefinition.Graffiti)
                         {
-                            Material customGraffiti = CustomAssets.GetGraffiti(character);
-                            FieldInfo uiField = ___player.GetField("ui");
-                            GameplayUI ui = (GameplayUI)uiField.GetValue(___player);
-                            ui.graffitiTitle.text = string.Format("'{0}'", customGraffiti.mainTexture.name);
+                            if (___grafArt == ___graffitiArtInfo.FindByCharacter(character))
+                            {
+                                FieldInfo uiField = ___player.GetField("ui");
+                                GameplayUI ui = (GameplayUI)uiField.GetValue(___player);
+                                ui.graffitiTitle.text = string.Format("'{0}'", characterDefinition.Graffiti.mainTexture.name);
+                            }
                         }
                     }
                 }

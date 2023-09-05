@@ -17,7 +17,7 @@ namespace BrcCustomCharacters.Patches
             if (CustomAssets.HasCharacter(characterToLoad))
             {
                 //Load custom asset
-                fbxAsset = CustomAssets.GetCharacter(characterToLoad);
+                fbxAsset = CustomAssets.GetCharacterReplacement(characterToLoad).gameObject;
             }
             else
             {
@@ -41,7 +41,7 @@ namespace BrcCustomCharacters.Patches
             if (CustomAssets.HasCharacter(characterToLoad))
             {
                 //Load custom asset
-                fbxAsset = CustomAssets.GetCharacter(characterToLoad);
+                fbxAsset = CustomAssets.GetCharacterReplacement(characterToLoad).gameObject;
             }
             else
             {
@@ -69,7 +69,7 @@ namespace BrcCustomCharacters.Patches
             Material materialAsset = assets.LoadAssetFromBundle<Material>(CharUtil.CHARACTER_BUNDLE, CharUtil.GetOutfitMaterialName(characterToLoad, outfitIndex));
             if (CustomAssets.HasCharacter(characterToLoad))
             {
-                Material customMaterial = CustomAssets.GetMaterial(characterToLoad, outfitIndex);
+                Material customMaterial = CustomAssets.GetCharacterReplacement(characterToLoad).Outfits[outfitIndex];
 
                 //Set BRC shader
                 customMaterial.shader = materialAsset.shader;
@@ -94,7 +94,7 @@ namespace BrcCustomCharacters.Patches
             Material materialAsset = characterMaterialRequest.asset as Material;
             if (CustomAssets.HasCharacter(characterToLoad))
             {
-                Material customMaterial = CustomAssets.GetMaterial(characterToLoad, outfitIndex);
+                Material customMaterial = CustomAssets.GetCharacterReplacement(characterToLoad).Outfits[outfitIndex];
 
                 //Set BRC shader
                 customMaterial.shader = materialAsset.shader;
@@ -117,9 +117,13 @@ namespace BrcCustomCharacters.Patches
                             PlayerMoveStyleProps ___moveStyleProps,
                             CharacterVisual __instance)
         {
-            string cloneName = __instance.transform.GetChild(0).name;
-            bool found = System.Enum.TryParse<Characters>(cloneName.Remove(cloneName.Length - 7, 7), true, out Characters character);
-            if (found && mode == CharacterVisual.MoveStylePropMode.ACTIVE && CustomAssets.HasCharacter(character))
+            Player player = __instance.GetComponentInParent<Player>(true);
+            if (player == null)
+            {
+                return;
+            }
+            Characters character = (Characters)player.GetField("character").GetValue(player);
+            if (mode == CharacterVisual.MoveStylePropMode.ACTIVE && CustomAssets.HasCharacter(character))
             {
                 Transform offsetL = ___footL.Find(CharUtil.SKATE_OFFSET_L);
                 Transform offsetR = ___footR.Find(CharUtil.SKATE_OFFSET_R);

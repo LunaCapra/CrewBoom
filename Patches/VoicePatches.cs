@@ -2,6 +2,7 @@
 using Reptile;
 using HarmonyLib;
 using System.Collections.Generic;
+using BrcCustomCharactersLib;
 
 namespace BrcCustomCharacters.Patches
 {
@@ -12,54 +13,55 @@ namespace BrcCustomCharacters.Patches
         {
             foreach (KeyValuePair<SfxCollectionID, SfxCollection> collectionPair in __instance.sfxCollectionIDDictionary)
             {
-                if (CustomAssets.HasVoice(collectionPair.Key))
+                Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionPair.Key);
+                if (CustomAssets.HasCharacter(correspondingCharacter))
                 {
                     foreach (SfxCollection.RandomAudioClipContainer originalContainer in collectionPair.Value.audioClipContainers)
                     {
-                        CustomCharacterVoice voice = CustomAssets.GetVoice(collectionPair.Key);
+                        CharacterDefinition characterDefinition = CustomAssets.GetCharacterReplacement(correspondingCharacter);
 
                         switch (originalContainer.clipID)
                         {
                             case AudioClipID.VoiceDie:
-                                if (voice.VoiceDie.Count > 0)
+                                if (characterDefinition.VoiceDie.Length > 0)
                                 {
-                                    originalContainer.clips = voice.VoiceDie.ToArray();
+                                    originalContainer.clips = characterDefinition.VoiceDie;
                                 }
                                 break;
                             case AudioClipID.VoiceDieFall:
-                                if (voice.VoiceDieFall.Count > 0)
+                                if (characterDefinition.VoiceDieFall.Length > 0)
                                 {
-                                    originalContainer.clips = voice.VoiceDieFall.ToArray();
+                                    originalContainer.clips = characterDefinition.VoiceDieFall;
                                 }
                                 break;
                             case AudioClipID.VoiceTalk:
-                                if (voice.VoiceTalk.Count > 0)
+                                if (characterDefinition.VoiceTalk.Length > 0)
                                 {
-                                    originalContainer.clips = voice.VoiceTalk.ToArray();
+                                    originalContainer.clips = characterDefinition.VoiceTalk;
                                 }
                                 break;
                             case AudioClipID.VoiceBoostTrick:
-                                if (voice.VoiceBoostTrick.Count > 0)
+                                if (characterDefinition.VoiceBoostTrick.Length > 0)
                                 {
-                                    originalContainer.clips = voice.VoiceBoostTrick.ToArray();
+                                    originalContainer.clips = characterDefinition.VoiceBoostTrick;
                                 }
                                 break;
                             case AudioClipID.VoiceCombo:
-                                if (voice.VoiceCombo.Count > 0)
+                                if (characterDefinition.VoiceCombo.Length > 0)
                                 {
-                                    originalContainer.clips = voice.VoiceCombo.ToArray();
+                                    originalContainer.clips = characterDefinition.VoiceCombo;
                                 }
                                 break;
                             case AudioClipID.VoiceGetHit:
-                                if (voice.VoiceGetHit.Count > 0)
+                                if (characterDefinition.VoiceGetHit.Length > 0)
                                 {
-                                    originalContainer.clips = voice.VoiceGetHit.ToArray();
+                                    originalContainer.clips = characterDefinition.VoiceGetHit;
                                 }
                                 break;
                             case AudioClipID.VoiceJump:
-                                if (voice.VoiceJump.Count > 0)
+                                if (characterDefinition.VoiceJump.Length > 0)
                                 {
-                                    originalContainer.clips = voice.VoiceJump.ToArray();
+                                    originalContainer.clips = characterDefinition.VoiceJump;
                                 }
                                 break;
                         }

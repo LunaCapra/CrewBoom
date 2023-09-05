@@ -84,7 +84,7 @@ namespace BrcCustomCharacters.Patches
                 dynamicBone.enabled = false;
             }
 
-            GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacter(swappable.Character), swappable.transform);
+            GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacterReplacement(swappable.Character), swappable.transform).gameObject;
 
             Animator originalAnimator = null;
             foreach (Transform child in swappable.transform)

@@ -3,104 +3,90 @@ using Reptile;
 using System.IO;
 using BrcCustomCharacters;
 using System.Collections.Generic;
+using System;
+using BrcCustomCharactersLib;
+using UnityEngine.TextCore.Text;
+using BepInEx.Logging;
 
 public static class CustomAssets
 {
     private const string CHAR_ASSET_FOLDER = "brcCustomCharacters/CharAssets";
     private static string ASSET_PATH;
 
-    private const string VOICE_DIE_SUFFIX = "_die";
-    private const string VOICE_DIEFALL_SUFFIX = "_dieFall";
-    private const string VOICE_TALK_SUFFIX = "_talk";
-    private const string VOICE_BOOSTTRICK_SUFFIX = "_bTrick";
-    private const string VOICE_COMBO_SUFFIX = "_combo";
-    private const string VOICE_GETHIT_SUFFIX = "_hit";
-    private const string VOICE_JUMP_SUFFIX = "_jump";
-
-    private static AssetBundle[] _characterBundles;
-    private static Material[] _characterGraffiti;
-    private static Dictionary<SfxCollectionID, CustomCharacterVoice> _characterVoices;
+    private static Dictionary<Guid, string> _characterBundlePaths;
+    private static Dictionary<Guid, string> _characterObjectNames;
+    private static Dictionary<Guid, AssetBundle> _loadedBundles;
+    private static Dictionary<Characters, List<Guid>> _characterReplacementIds;
 
     public static void Initialize(string pluginPath)
     {
         ASSET_PATH = Path.Combine(pluginPath, CHAR_ASSET_FOLDER);
 
-        string[] characterEnum = System.Enum.GetNames(typeof(Characters));
-        _characterBundles = new AssetBundle[characterEnum.Length];
-        _characterGraffiti = new Material[characterEnum.Length];
-        _characterVoices = new Dictionary<SfxCollectionID, CustomCharacterVoice>();
-
-        for (int i = 0; i < characterEnum.Length; i++)
+        _characterBundlePaths = new Dictionary<Guid, string>();
+        _characterObjectNames = new Dictionary<Guid, string>();
+        _loadedBundles = new Dictionary<Guid, AssetBundle>();
+        _characterReplacementIds = new Dictionary<Characters, List<Guid>>();
+        var charactersEnum = Enum.GetValues(typeof(Characters));
+        foreach (Characters character in charactersEnum)
         {
-            if (LoadCharacterBundle((Characters)i, out AssetBundle characterBundle))
+            if (character == Characters.NONE || character == Characters.MAX)
             {
-                _characterBundles[i] = characterBundle;
+                _characterReplacementIds.Add(character, null);
+                continue;
+            }
+            _characterReplacementIds.Add(character, new List<Guid>());
+        }
 
-                Material graffiti = _characterBundles[i].LoadAsset<Material>(CharUtil.GRAFFITI_ASSET);
-                _characterGraffiti[i] = graffiti;
+        LoadAllCharacterData();
+    }
 
-                AudioClip[] allVoices = _characterBundles[i].LoadAllAssets<AudioClip>();
-                if (allVoices.Length > 0)
+    private static void LoadAllCharacterData()
+    {
+        ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("BRCCustomCharacters Loader");
+
+        foreach (string filePath in Directory.GetFiles(ASSET_PATH))
+        {
+            if (File.Exists(filePath))
+            {
+                AssetBundle bundle = AssetBundle.LoadFromFile(filePath);
+                if (bundle != null)
                 {
-                    SfxCollectionID key = VoiceUtility.VoiceCollectionFromCharacter((Characters)i);
-                    _characterVoices.Add(key, new CustomCharacterVoice());
-                    foreach (AudioClip voice in allVoices)
+                    GameObject[] objects = bundle.LoadAllAssets<GameObject>();
+                    CharacterDefinition character = null;
+                    foreach (GameObject obj in objects)
                     {
-                        if (voice.name.EndsWith(VOICE_DIE_SUFFIX))
+                        character = obj.GetComponent<CharacterDefinition>();
+                        if (character != null)
                         {
-                            _characterVoices[key].VoiceDie.Add(voice);
-                        }
-                        if (voice.name.EndsWith(VOICE_DIEFALL_SUFFIX))
-                        {
-                            _characterVoices[key].VoiceDieFall.Add(voice);
-                        }
-                        if (voice.name.EndsWith(VOICE_TALK_SUFFIX))
-                        {
-                            _characterVoices[key].VoiceTalk.Add(voice);
-                        }
-                        if (voice.name.EndsWith(VOICE_BOOSTTRICK_SUFFIX))
-                        {
-                            _characterVoices[key].VoiceBoostTrick.Add(voice);
-                        }
-                        if (voice.name.EndsWith(VOICE_COMBO_SUFFIX))
-                        {
-                            _characterVoices[key].VoiceCombo.Add(voice);
-                        }
-                        if (voice.name.EndsWith(VOICE_GETHIT_SUFFIX))
-                        {
-                            _characterVoices[key].VoiceGetHit.Add(voice);
-                        }
-                        if (voice.name.EndsWith(VOICE_JUMP_SUFFIX))
-                        {
-                            _characterVoices[key].VoiceJump.Add(voice);
+                            break;
                         }
                     }
+                    if (objects.Length > 0)
+                    {
+                        Guid id = Guid.Parse(character.Id);
+                        _characterBundlePaths.Add(id, filePath);
+                        _characterObjectNames.Add(id, character.gameObject.name);
+                        _characterReplacementIds[(Characters)character.CharacterToReplace].Add(id);
+
+                        log.LogInfo($"Found character replacement \"{character.CharacterName}\" over {character.CharacterToReplace}");
+                        log.LogInfo($"\tID: {id}");
+                    }
+
+                    bundle.Unload(true);
                 }
             }
         }
-    }
 
-    private static bool LoadCharacterBundle(Characters character, out AssetBundle bundle)
-    {
-        bundle = null;
-
-        string filePath = Path.Combine(ASSET_PATH, character.ToString().ToLower());
-
-        if (File.Exists(filePath))
+        foreach (var bundle in AssetBundle.GetAllLoadedAssetBundles())
         {
-            AssetBundle characterBundle = AssetBundle.LoadFromFile(filePath);
-            bundle = characterBundle;
-            return true;
+            log.LogInfo($"Loaded bundle: {bundle.name}");
         }
-
-        return false;
     }
 
     public static bool HasCharacter(Characters character)
     {
-        //Catch Characters.NONE as it is -1
-        if (character == Characters.NONE) return false;
-        return _characterBundles[(int)character] != null;
+        List<Guid> characterIds = _characterReplacementIds[character];
+        return characterIds != null && characterIds.Count > 0;
     }
 
     public static bool GetCharacterName(Characters character, out string name)
@@ -109,14 +95,8 @@ public static class CustomAssets
 
         if (HasCharacter(character))
         {
-            Transform nameObject = GetCharacter(character).transform.Find("name");
-            if (nameObject)
-            {
-                Transform text = nameObject.GetChild(0);
-                name = text.name;
-
-                return true;
-            }
+            name = GetCharacterReplacement(character).CharacterName;
+            return true;
         }
 
         return false;
@@ -190,34 +170,34 @@ public static class CustomAssets
         }
     }
 
-    public static bool HasGraffiti(Characters character)
+    private static Guid GetFirstOrConfigCharacterId(Characters character)
     {
-        return _characterGraffiti[(int)character] != null;
+        if (AssetConfig.GetCharacterOverride(character, out Guid id))
+        {
+            return id;
+        }
+        return _characterReplacementIds[character][0];
     }
 
-    public static bool HasVoice(SfxCollectionID id)
+    public static CharacterDefinition GetCharacterReplacement(Characters character)
     {
-        return _characterVoices.ContainsKey(id);
+        Guid id = GetFirstOrConfigCharacterId(character);
+        return GetCharacterReplacement(id);
     }
 
-    public static GameObject GetCharacter(Characters character)
+    private static AssetBundle GetCharacterBundle(Guid id)
     {
-        return _characterBundles[(int)character].LoadAsset<GameObject>(character.ToString());
+        if (!_loadedBundles.ContainsKey(id) || _loadedBundles[id] == null)
+        {
+            _loadedBundles[id] = AssetBundle.LoadFromFile(_characterBundlePaths[id]);
+        }
+
+        return _loadedBundles[id];
     }
 
-    public static Material GetMaterial(Characters character, int outfitIndex)
+    public static CharacterDefinition GetCharacterReplacement(Guid id)
     {
-        return _characterBundles[(int)character].LoadAsset<Material>(CharUtil.GetOutfitMaterialName(character, outfitIndex));
-    }
-
-    public static Material GetGraffiti(Characters character)
-    {
-        return _characterGraffiti[(int)character];
-    }
-
-    public static CustomCharacterVoice GetVoice(SfxCollectionID id)
-    {
-        _characterVoices.TryGetValue(id, out CustomCharacterVoice voice);
-        return voice;
+        AssetBundle characterBundle = GetCharacterBundle(id);
+        return characterBundle.LoadAsset<GameObject>(_characterObjectNames[id]).GetComponent<CharacterDefinition>();
     }
 }

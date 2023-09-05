@@ -64,5 +64,61 @@ namespace BrcCustomCharacters
 
             return SfxCollectionID.NONE;
         }
+        public static Characters CharacterFromVoiceCollection(SfxCollectionID collectionID)
+        {
+            switch (collectionID)
+            {
+                case SfxCollectionID.VoiceAngel:
+                    return Characters.angel;
+                case SfxCollectionID.VoiceBlockGuy:
+                    return Characters.blockGuy;
+                case SfxCollectionID.VoiceBoarder:
+                    return Characters.boarder;
+                case SfxCollectionID.VoiceBunGirl:
+                    return Characters.bunGirl;
+                case SfxCollectionID.VoiceDJ:
+                    return Characters.dj;
+                case SfxCollectionID.VoiceDummy:
+                    return Characters.dummy;
+                case SfxCollectionID.VoiceEightBall:
+                    return Characters.eightBall;
+                case SfxCollectionID.VoiceEightBallBoss:
+                    return Characters.eightBallBoss;
+                case SfxCollectionID.VoiceFrank:
+                    return Characters.frank;
+                case SfxCollectionID.VoiceFutureGirl:
+                    return Characters.futureGirl;
+                case SfxCollectionID.VoiceGirl1:
+                    return Characters.girl1;
+                case SfxCollectionID.VoiceHeadman:
+                    return Characters.headMan;
+                case SfxCollectionID.VoiceHeadmanNoJetpack:
+                    return Characters.headManNoJetpack;
+                case SfxCollectionID.VoiceJetpackBoss:
+                    return Characters.jetpackBossPlayer;
+                case SfxCollectionID.VoiceLegendFace:
+                    return Characters.legendFace;
+                case SfxCollectionID.VoiceMedusa:
+                    return Characters.medusa;
+                case SfxCollectionID.VoiceMetalHead:
+                    return Characters.metalHead;
+                case SfxCollectionID.VoicePrince:
+                    return Characters.prince;
+                case SfxCollectionID.VoicePufferGirl:
+                    return Characters.pufferGirl;
+                case SfxCollectionID.VoiceRingDude:
+                    return Characters.ringdude;
+                case SfxCollectionID.VoiceSpaceGirl:
+                    return Characters.spaceGirl;
+                case SfxCollectionID.VoiceWideKid:
+                    return Characters.wideKid;
+                case SfxCollectionID.VoiceRobot:
+                    return Characters.robot;
+                case SfxCollectionID.VoiceSkate:
+                    return Characters.skate;
+                default:
+                    return Characters.NONE;
+            }
+        }
     }
 }

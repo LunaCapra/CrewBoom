@@ -22,7 +22,7 @@ namespace BrcCustomCharacters.Patches
                             dynamicBone.enabled = false;
                         }
 
-                        GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacter(npcCharacter.Character), npcCharacter.transform);
+                        GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacterReplacement(npcCharacter.Character), npcCharacter.transform).gameObject;
 
                         Animator originalAnimator = npcCharacter.GetComponentInChildren<Animator>(true);
                         Animator customAnimator = customCharacter.GetComponent<Animator>();
@@ -48,7 +48,7 @@ namespace BrcCustomCharacters.Patches
             }
             else if (CustomAssets.HasCharacter(___character))
             {
-                GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacter(___character), __instance.transform);
+                GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacterReplacement(___character), __instance.transform).gameObject;
 
                 Animator originalAnimator = __instance.transform.GetComponentInChildren<Animator>(true);
                 Animator customAnimator = customCharacter.GetComponent<Animator>();

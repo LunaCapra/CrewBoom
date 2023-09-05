@@ -15,9 +15,13 @@ namespace BrcCustomCharacters
             // Plugin startup logic
             Logger.LogInfo($"{PluginInfo.PLUGIN_GUID} loaded.");
 
-            Logger.LogInfo("Loading character assets...");
+            Logger.LogInfo("Loading configuration...");
+            AssetConfig.Init(Config);
+            Logger.LogInfo("Configuration loaded.");
+
+            Logger.LogInfo("Initializing model replacement database.");
             CustomAssets.Initialize(Paths.PluginPath);
-            Logger.LogInfo("Character assets loaded.");
+            Logger.LogInfo("Database initialized.");
 
             Harmony harmony = new Harmony("io.sgiygas.brcCustomCharacters");
             harmony.PatchAll();
