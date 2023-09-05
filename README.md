@@ -26,7 +26,7 @@ To create a character mod you will need both of these. If you just want to use a
 ## Installation
 
 This plugin requires [BepInEx](https://thunderstore.io/package/bbepis/BepInExPack/), a plugin framework for Unity games.
-The easiest way to get BepInEx going for Bomb Rush Cyberfunk is to use either the [r2modman mod manager](https://thunderstore.io/package/ebkr/r2modman/).  
+The easiest way to get BepInEx going for Bomb Rush Cyberfunk is to use the [r2modman mod manager](https://thunderstore.io/package/ebkr/r2modman/).  
 
 *r2modman was used to test this plugin, so other solutions may not work*
 
