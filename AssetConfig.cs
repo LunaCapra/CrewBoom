@@ -8,6 +8,8 @@ namespace BrcCustomCharacters
 {
     public static class AssetConfig
     {
+        private const string CONFIG_DESCRIPTION = "Enter a GUID of a character bundle to always load for {0} (Blank = Auto-detect, \"OFF\" = Default character for you)";
+
         private static ConfigEntry<string>[] _characterIdOverrides;
 
         public static void Init(ConfigFile config)
@@ -22,7 +24,7 @@ namespace BrcCustomCharacters
                 }
 
                 BrcNamedCharacter characterName = (BrcNamedCharacter)character;
-                _characterIdOverrides[(int)character] = config.Bind<string>("Replacement IDs", $"{characterName}", null, $"Enter a GUID of a character bundle to always load for {characterName}.\nLeave blank to auto-detect."); ;
+                _characterIdOverrides[(int)character] = config.Bind<string>("Replacement IDs", characterName.ToString(), null, string.Format(CONFIG_DESCRIPTION, characterName)); ;
                 if (_characterIdOverrides[(int)character].Value != string.Empty)
                 {
                     ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("BrcCustomCharacters Config");
@@ -31,23 +33,31 @@ namespace BrcCustomCharacters
             }
         }
 
-        public static bool GetCharacterOverride(Characters character, out Guid id)
+        public static bool GetCharacterOverride(Characters character, out Guid id, out bool isDisabled)
         {
             id = Guid.Empty;
+            isDisabled = false;
 
             string guidString = _characterIdOverrides[(int)character].Value;
             if (guidString == string.Empty)
             {
                 return false;
             }
-
-            id = Guid.Parse(guidString);
-            if (id.Equals(Guid.Empty))
+            if (guidString == "OFF")
             {
+                isDisabled = true;
                 return false;
             }
 
-            return true;
+            try
+            {
+                id = Guid.Parse(guidString);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

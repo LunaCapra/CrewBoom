@@ -1,117 +1,58 @@
 ﻿using BepInEx.Logging;
+using BrcCustomCharactersLib;
 using HarmonyLib;
 using Reptile;
-using System.Collections;
 using UnityEngine;
 
 namespace BrcCustomCharacters.Patches
 {
-    [HarmonyPatch(typeof(Reptile.CharacterLoader), "LoadFBXForCharacter")]
-    public class LoadingPatch
+    [HarmonyPatch(typeof(Reptile.CharacterLoader), nameof(Reptile.CharacterLoader.GetCharacterFbx))]
+    public class GetFbxPatch
     {
-        static void Postfix(Characters characterToLoad, CharacterLoader __instance)
+        public static void Postfix(Characters character, ref GameObject __result)
         {
-            Assets assets = LoadUtil.GetAssets(__instance);
+            //if (BrcCustomCharactersAPI.Database.GetNextOverride(out System.Guid id))
+            //{
+            //    AssetDatabase.GetCharacterReplacement(id, out CharacterDefinition overrideCharacter);
+            //    __result = overrideCharacter.gameObject;
+            //    return;
+            //}
 
-            GameObject fbxAsset;
-            if (CustomAssets.HasCharacter(characterToLoad))
+            if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
             {
-                //Load custom asset
-                fbxAsset = CustomAssets.GetCharacterReplacement(characterToLoad).gameObject;
+                __result = characterObject.gameObject;
             }
-            else
-            {
-                //Load default asset
-                fbxAsset = assets.LoadAssetFromBundle<GameObject>(CharUtil.CHARACTER_BUNDLE, characterToLoad.ToString());
-            }
-
-            //Invoke private add fbx method
-            __instance.InvokeMethod(CharUtil.ADD_CHARACTER_METHOD, new object[] { characterToLoad, fbxAsset });
         }
     }
 
-    [HarmonyPatch(typeof(Reptile.CharacterLoader), "LoadFBXForCharacterASync")]
-    public class AsyncLoadingPatch
+    [HarmonyPatch(typeof(Reptile.CharacterLoader), nameof(Reptile.CharacterLoader.GetCharacterMaterial))]
+    public class GetMaterialPatch
     {
-        static IEnumerator Postfix(IEnumerator __result, Characters characterToLoad, CharacterLoader __instance)
+        public static void Postfix(Characters character, int outfitIndex, ref Material __result)
         {
-            Assets assets = LoadUtil.GetAssets(__instance);
+            //if (BrcCustomCharactersAPI.Database.GetNextOverride(out System.Guid id))
+            //{
+            //    AssetDatabase.GetCharacterReplacement(id, out CharacterDefinition overrideCharacter);
+            //    __result = overrideCharacter.Outfits[outfitIndex];
+            //    return;
+            //}
 
-            GameObject fbxAsset;
-            if (CustomAssets.HasCharacter(characterToLoad))
+            if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
             {
-                //Load custom asset
-                fbxAsset = CustomAssets.GetCharacterReplacement(characterToLoad).gameObject;
+                Material material = characterObject.Outfits[outfitIndex];
+                if (characterObject.UseReptileShader)
+                {
+                    material.shader = __result.shader;
+                }
+                __result = material;
             }
-            else
-            {
-                //Load default asset
-                AssetBundleRequest characterFbxAssetRequest = assets.LoadAssetFromBundleASync<GameObject>(CharUtil.CHARACTER_BUNDLE, characterToLoad.ToString());
-                yield return characterFbxAssetRequest;
-
-                fbxAsset = characterFbxAssetRequest.asset as GameObject;
-            }
-
-            //Invoke private add fbx method
-            __instance.InvokeMethod(CharUtil.ADD_CHARACTER_METHOD, new object[] { characterToLoad, fbxAsset });
-
-            yield break;
         }
     }
 
-    [HarmonyPatch(typeof(Reptile.CharacterLoader), "LoadMaterialForCharacter")]
-    public class MaterialPatch
-    {
-        static void Postfix(Characters characterToLoad, int outfitIndex, CharacterLoader __instance)
-        {
-            Assets assets = LoadUtil.GetAssets(__instance);
-
-            Material materialAsset = assets.LoadAssetFromBundle<Material>(CharUtil.CHARACTER_BUNDLE, CharUtil.GetOutfitMaterialName(characterToLoad, outfitIndex));
-            if (CustomAssets.HasCharacter(characterToLoad))
-            {
-                Material customMaterial = CustomAssets.GetCharacterReplacement(characterToLoad).Outfits[outfitIndex];
-
-                //Set BRC shader
-                customMaterial.shader = materialAsset.shader;
-
-                materialAsset = customMaterial;
-            }
-
-            __instance.InvokeMethod(CharUtil.ADD_MATERIAL_METHOD, new object[] { characterToLoad, outfitIndex, materialAsset });
-        }
-    }
-
-    [HarmonyPatch(typeof(Reptile.CharacterLoader), "LoadMaterialsForCharacterASync")]
-    public class MaterialAsyncPatch
-    {
-        static IEnumerator Postfix(IEnumerator __result, Characters characterToLoad, int outfitIndex, CharacterLoader __instance)
-        {
-            Assets assets = LoadUtil.GetAssets(__instance);
-
-            AssetBundleRequest characterMaterialRequest = assets.LoadAssetFromBundleASync<Material>(CharUtil.CHARACTER_BUNDLE, CharUtil.GetOutfitMaterialName(characterToLoad, outfitIndex));
-            yield return characterMaterialRequest;
-
-            Material materialAsset = characterMaterialRequest.asset as Material;
-            if (CustomAssets.HasCharacter(characterToLoad))
-            {
-                Material customMaterial = CustomAssets.GetCharacterReplacement(characterToLoad).Outfits[outfitIndex];
-
-                //Set BRC shader
-                customMaterial.shader = materialAsset.shader;
-
-                materialAsset = customMaterial;
-            }
-
-            __instance.InvokeMethod(CharUtil.ADD_MATERIAL_METHOD, new object[] { characterToLoad, outfitIndex, materialAsset });
-
-            yield break;
-        }
-    }
-
-    [HarmonyPatch(typeof(Reptile.CharacterVisual), "SetInlineSkatesPropsMode")]
+    [HarmonyPatch(typeof(Reptile.CharacterVisual), nameof(Reptile.CharacterVisual.InitMoveStyleProps))]
     public class InlineSkatesTransformPatch
     {
-        static void Postfix(CharacterVisual.MoveStylePropMode mode,
+        static void Postfix(
                             Transform ___footL,
                             Transform ___footR,
                             PlayerMoveStyleProps ___moveStyleProps,
@@ -123,7 +64,7 @@ namespace BrcCustomCharacters.Patches
                 return;
             }
             Characters character = (Characters)player.GetField("character").GetValue(player);
-            if (mode == CharacterVisual.MoveStylePropMode.ACTIVE && CustomAssets.HasCharacter(character))
+            if (AssetDatabase.HasCharacter(character))
             {
                 Transform offsetL = ___footL.Find(CharUtil.SKATE_OFFSET_L);
                 Transform offsetR = ___footR.Find(CharUtil.SKATE_OFFSET_R);

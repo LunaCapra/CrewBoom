@@ -17,15 +17,13 @@ namespace BrcCustomCharacters.Patches
             for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
             {
                 Characters character = (Characters)i;
-                if (CustomAssets.HasCharacter(character))
+                if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
                 {
-                    CharacterDefinition characterDefinition = CustomAssets.GetCharacterReplacement(character);
-
-                    if (characterDefinition.Graffiti)
+                    if (characterObject.Graffiti)
                     {
                         GraffitiArt graffiti = ___graffitiArtInfo.FindByCharacter(character);
 
-                        Texture mainTex = characterDefinition.Graffiti.mainTexture;
+                        Texture mainTex = characterObject.Graffiti.mainTexture;
                         graffiti.graffitiMaterial.mainTexture = mainTex;
                     }
                 }
@@ -46,15 +44,13 @@ namespace BrcCustomCharacters.Patches
             for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
             {
                 Characters character = (Characters)i;
-                if (CustomAssets.HasCharacter(character))
+                if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
                 {
-                    CharacterDefinition characterDefinition = CustomAssets.GetCharacterReplacement(character);
-
-                    if (characterDefinition.Graffiti)
+                    if (characterObject.Graffiti)
                     {
                         GraffitiArt graffiti = info.FindByCharacter(character);
 
-                        Texture mainTex = characterDefinition.Graffiti.mainTexture;
+                        Texture mainTex = characterObject.Graffiti.mainTexture;
                         graffiti.graffitiMaterial.mainTexture = mainTex;
                     }
                 }
@@ -80,17 +76,15 @@ namespace BrcCustomCharacters.Patches
                 for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
                 {
                     Characters character = (Characters)i;
-                    if (CustomAssets.HasCharacter(character))
+                    if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
                     {
-                        CharacterDefinition characterDefinition = CustomAssets.GetCharacterReplacement(character);
-
-                        if (characterDefinition.Graffiti)
+                        if (characterObject.Graffiti)
                         {
                             if (___grafArt == ___graffitiArtInfo.FindByCharacter(character))
                             {
                                 FieldInfo uiField = ___player.GetField("ui");
                                 GameplayUI ui = (GameplayUI)uiField.GetValue(___player);
-                                ui.graffitiTitle.text = string.Format("'{0}'", characterDefinition.Graffiti.mainTexture.name);
+                                ui.graffitiTitle.text = string.Format("'{0}'", characterObject.Graffiti.mainTexture.name);
                             }
                         }
                     }

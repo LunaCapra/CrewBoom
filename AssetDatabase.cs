@@ -5,10 +5,9 @@ using BrcCustomCharacters;
 using System.Collections.Generic;
 using System;
 using BrcCustomCharactersLib;
-using UnityEngine.TextCore.Text;
 using BepInEx.Logging;
 
-public static class CustomAssets
+public static class AssetDatabase
 {
     private const string CHAR_ASSET_FOLDER = "brcCustomCharacters/CharAssets";
     private static string ASSET_PATH;
@@ -38,6 +37,7 @@ public static class CustomAssets
         }
 
         LoadAllCharacterData();
+        //InitializeAPI();
     }
 
     private static void LoadAllCharacterData()
@@ -83,19 +83,30 @@ public static class CustomAssets
         }
     }
 
-    public static bool HasCharacter(Characters character)
-    {
-        List<Guid> characterIds = _characterReplacementIds[character];
-        return characterIds != null && characterIds.Count > 0;
-    }
+    //private static void InitializeAPI()
+    //{
+    //    Dictionary<int, Guid> userReplacements = new Dictionary<int, Guid>();
+
+    //    var values = Enum.GetValues(typeof(Characters));
+    //    for (int i = 0; i < values.Length; i++)
+    //    {
+    //        Characters character = (Characters)values.GetValue(i);
+    //        if (GetFirstOrConfigCharacterId(character, out Guid id))
+    //        {
+    //            userReplacements.Add(i, id);
+    //        }
+    //    }
+
+    //    BrcCustomCharactersAPI.Database.Initialize(userReplacements);
+    //}
 
     public static bool GetCharacterName(Characters character, out string name)
     {
         name = string.Empty;
 
-        if (HasCharacter(character))
+        if (GetCharacterReplacement(character, out CharacterDefinition characterObject))
         {
-            name = GetCharacterReplacement(character).CharacterName;
+            name = characterObject.CharacterName;
             return true;
         }
 
@@ -170,21 +181,6 @@ public static class CustomAssets
         }
     }
 
-    private static Guid GetFirstOrConfigCharacterId(Characters character)
-    {
-        if (AssetConfig.GetCharacterOverride(character, out Guid id))
-        {
-            return id;
-        }
-        return _characterReplacementIds[character][0];
-    }
-
-    public static CharacterDefinition GetCharacterReplacement(Characters character)
-    {
-        Guid id = GetFirstOrConfigCharacterId(character);
-        return GetCharacterReplacement(id);
-    }
-
     private static AssetBundle GetCharacterBundle(Guid id)
     {
         if (!_loadedBundles.ContainsKey(id) || _loadedBundles[id] == null)
@@ -194,10 +190,72 @@ public static class CustomAssets
 
         return _loadedBundles[id];
     }
-
-    public static CharacterDefinition GetCharacterReplacement(Guid id)
+    private static bool GetFirstOrConfigCharacterId(Characters character, out Guid guid)
     {
+        guid = Guid.Empty;
+
+        if (_characterReplacementIds[character] == null || _characterReplacementIds[character].Count == 0)
+        {
+            return false;
+        }
+
+        if (AssetConfig.GetCharacterOverride(character, out Guid id, out bool isDisabled))
+        {
+            if (_characterBundlePaths.ContainsKey(id) && _characterObjectNames.ContainsKey(id))
+            {
+                guid = id;
+                return true;
+            }
+        }
+        else
+        {
+            if (isDisabled)
+            {
+                return false;
+            }
+        }
+
+        if (_characterReplacementIds[character].Count > 0)
+        {
+            guid = _characterReplacementIds[character][0];
+            return true;
+        }
+
+        return false;
+    }
+
+    public static bool GetCharacterReplacement(Guid id, out CharacterDefinition characterObject)
+    {
+        characterObject = null;
+
+        if (!_characterBundlePaths.ContainsKey(id))
+        {
+            return false;
+        }
+
         AssetBundle characterBundle = GetCharacterBundle(id);
-        return characterBundle.LoadAsset<GameObject>(_characterObjectNames[id]).GetComponent<CharacterDefinition>();
+        if (characterBundle == null)
+        {
+            return false;
+        }
+
+        characterObject = characterBundle.LoadAsset<GameObject>(_characterBundlePaths[id]).GetComponent<CharacterDefinition>();
+        return true;
+    }
+    public static bool GetCharacterReplacement(Characters character, out CharacterDefinition characterObject)
+    {
+        characterObject = null;
+
+        if (GetFirstOrConfigCharacterId(character, out Guid guid))
+        {
+            GetCharacterReplacement(guid, out characterObject);
+        }
+
+        return characterObject != null;
+    }
+    public static bool HasCharacter(Characters character)
+    {
+        List<Guid> characterIds = _characterReplacementIds[character];
+        return characterIds != null && characterIds.Count > 0;
     }
 }

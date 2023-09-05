@@ -20,7 +20,7 @@ namespace BrcCustomCharacters
             Logger.LogInfo("Configuration loaded.");
 
             Logger.LogInfo("Initializing model replacement database.");
-            CustomAssets.Initialize(Paths.PluginPath);
+            AssetDatabase.Initialize(Paths.PluginPath);
             Logger.LogInfo("Database initialized.");
 
             Harmony harmony = new Harmony("io.sgiygas.brcCustomCharacters");

@@ -7,7 +7,7 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, ref string __result)
         {
-            if (CustomAssets.GetCharacterName(character, out string name))
+            if (AssetDatabase.GetCharacterName(character, out string name))
             {
                 __result = name;
             }
@@ -18,7 +18,7 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(int localizationKeyID, ref string __result)
         {
-            if (CustomAssets.GetCharacterNameWithId(localizationKeyID, out string name))
+            if (AssetDatabase.GetCharacterNameWithId(localizationKeyID, out string name))
             {
                 __result = name;
             }

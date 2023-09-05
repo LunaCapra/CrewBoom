@@ -2,6 +2,7 @@
 using Reptile;
 using HarmonyLib;
 using BepInEx.Logging;
+using BrcCustomCharactersLib;
 
 namespace BrcCustomCharacters.Patches
 {
@@ -15,14 +16,14 @@ namespace BrcCustomCharacters.Patches
             {
                 foreach (OutfitSwappableCharacter npcCharacter in characters)
                 {
-                    if (CustomAssets.HasCharacter(npcCharacter.Character))
+                    if (AssetDatabase.GetCharacterReplacement(npcCharacter.Character, out CharacterDefinition character))
                     {
                         foreach (DynamicBone dynamicBone in npcCharacter.GetComponents<DynamicBone>())
                         {
                             dynamicBone.enabled = false;
                         }
 
-                        GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacterReplacement(npcCharacter.Character), npcCharacter.transform).gameObject;
+                        GameObject customCharacter = Object.Instantiate(character, npcCharacter.transform).gameObject;
 
                         Animator originalAnimator = npcCharacter.GetComponentInChildren<Animator>(true);
                         Animator customAnimator = customCharacter.GetComponent<Animator>();
@@ -46,9 +47,9 @@ namespace BrcCustomCharacters.Patches
                     }
                 }
             }
-            else if (CustomAssets.HasCharacter(___character))
+            else if (AssetDatabase.GetCharacterReplacement(___character, out CharacterDefinition character))
             {
-                GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacterReplacement(___character), __instance.transform).gameObject;
+                GameObject customCharacter = Object.Instantiate(character, __instance.transform).gameObject;
 
                 Animator originalAnimator = __instance.transform.GetComponentInChildren<Animator>(true);
                 Animator customAnimator = customCharacter.GetComponent<Animator>();

@@ -1,4 +1,5 @@
 ﻿using BepInEx.Logging;
+using BrcCustomCharactersLib;
 using HarmonyLib;
 using Reptile;
 using System.Collections.Generic;
@@ -74,7 +75,7 @@ namespace BrcCustomCharacters.Patches
 
         private static void SwapOutfitSwappable(OutfitSwappableCharacter swappable)
         {
-            if (!CustomAssets.HasCharacter(swappable.Character))
+            if (!AssetDatabase.GetCharacterReplacement(swappable.Character, out CharacterDefinition character))
             {
                 return;
             }
@@ -84,7 +85,7 @@ namespace BrcCustomCharacters.Patches
                 dynamicBone.enabled = false;
             }
 
-            GameObject customCharacter = Object.Instantiate(CustomAssets.GetCharacterReplacement(swappable.Character), swappable.transform).gameObject;
+            GameObject customCharacter = Object.Instantiate(character, swappable.transform).gameObject;
 
             Animator originalAnimator = null;
             foreach (Transform child in swappable.transform)
@@ -138,7 +139,7 @@ namespace BrcCustomCharacters.Patches
         }
         private static void SwapCutsceneOnlyCharacter(Transform root, Characters character)
         {
-            if (!CustomAssets.HasCharacter(character))
+            if (!AssetDatabase.HasCharacter(character))
             {
                 return;
             }
