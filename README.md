@@ -25,9 +25,9 @@ The documentation on how to use the Unity project  can be found [here](https://g
 ## Installation
 
 This plugin requires [BepInEx](https://thunderstore.io/package/bbepis/BepInExPack/), a plugin framework for Unity games.
-The easiest way to get BepInEx going for Bomb Rush Cyberfunk is to use either the [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) or the [r2modman mod manager](https://thunderstore.io/package/ebkr/r2modman/).  
+The easiest way to get BepInEx going for Bomb Rush Cyberfunk is to use either the [r2modman mod manager](https://thunderstore.io/package/ebkr/r2modman/).  
 
-*r2modman was used to test this plugin, so it is not guaranteed to work with the Thunderstore Mod Manager as well*
+*r2modman was used to test this plugin, so other solutions may not work*
 
 ### Using r2modman
 
