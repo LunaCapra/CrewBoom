@@ -84,7 +84,7 @@ namespace BrcCustomCharacters.Patches
                             {
                                 FieldInfo uiField = ___player.GetField("ui");
                                 GameplayUI ui = (GameplayUI)uiField.GetValue(___player);
-                                ui.graffitiTitle.text = string.Format("'{0}'", characterObject.Graffiti.mainTexture.name);
+                                ui.graffitiTitle.text = string.Format("'{0}'", characterObject.GraffitiName);
                             }
                         }
                     }
