@@ -13,11 +13,12 @@ The plugin allows for the following:
 - Custom outfits (up to four)
 - Custom character graffiti
 - Custom character voice clips
+- Multiple skins at once (for different characters and per character)
 
 ## Getting started & Downloads
 
-### [Plugin](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v2.0.0/plugin.zip)
-### [Unity project](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v2.0.0/unityProject.zip)
+### [Plugin](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v2.0.1/plugin.zip)
+### [Unity project](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v2.0.1/unityProject.zip)
 
 To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
 
@@ -49,7 +50,7 @@ To install the plugin for BepInEx, follow these steps:
 ## Adding characters
 
 1. Navigate to your BepInEx installation for the game and open the `BepInEx/plugins/brcCustomCharacters/` folder
-2. Copy any character file (e.g. "metalhead") into the `CharAssets` folder
+2. Copy any character bundle file (usually named like `<character name>_<character they replace>`) into the `CharAssets` folder
 
 ## Building the plugin
 
