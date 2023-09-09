@@ -4,9 +4,10 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>BrcCustomCharacters</AssemblyName>
     <Description>Allows for loading of custom characters over existing ones.</Description>
-    <Version>1.0.0</Version>
+    <Version>2.1.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

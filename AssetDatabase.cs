@@ -93,7 +93,7 @@ public static class AssetDatabase
                     }
                     else
                     {
-                        DebugLog.LogWarning($"There is an AssetBundle (\"{bundle.name}\") in the CharAssets directory that does not have a CharacterDefinition.");
+                        DebugLog.LogWarning($"The asset bundle (\"{bundle.name}\") does not have a CharacterDefinition. You may be trying to load a character that was made with an older version of this plugin.");
                     }
 
                     //bundle.Unload(false);
