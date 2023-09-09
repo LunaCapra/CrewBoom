@@ -98,7 +98,8 @@ namespace BrcCustomCharacters.Patches
             Animator customAnimator = customCharacter.GetComponent<Animator>();
 
             originalAnimator.avatar = customAnimator.avatar;
-            swappable.SetField("mainRenderer", customAnimator.GetComponentInChildren<SkinnedMeshRenderer>(true));
+            SkinnedMeshRenderer customRenderer = customAnimator.GetComponentInChildren<SkinnedMeshRenderer>(true);
+            swappable.SetField("mainRenderer", customRenderer);
 
             foreach (Transform child in originalAnimator.transform)
             {
@@ -130,7 +131,15 @@ namespace BrcCustomCharacters.Patches
             StoryBlinkAnimation blink = originalAnimator.GetComponent<StoryBlinkAnimation>();
             if (blink)
             {
-                blink.enabled = false;
+                if (character.CanBlink)
+                {
+                    blink.mainRenderer = customRenderer;
+                    blink.characterMesh = customRenderer.sharedMesh;
+                }
+                else
+                {
+                    blink.enabled = false;
+                }
             }
 
             Object.Destroy(customCharacter);

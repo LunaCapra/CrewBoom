@@ -49,6 +49,18 @@ namespace BrcCustomCharacters.Patches
         }
     }
 
+    [HarmonyPatch(typeof(Reptile.CharacterVisual), nameof(Reptile.CharacterVisual.Init))]
+    public class BlinkPatch
+    {
+        public static void Postfix(Characters character, ref bool ___canBlink)
+        {
+            if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
+            {
+                ___canBlink = characterObject.CanBlink;
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Reptile.CharacterVisual), "SetInlineSkatesPropsMode")]
     public class InlineSkatesTransformPatch
     {
