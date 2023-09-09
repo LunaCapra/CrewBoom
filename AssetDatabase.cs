@@ -19,6 +19,8 @@ public static class AssetDatabase
     private static Dictionary<Guid, GameObject> _characterVisuals;
     private static Dictionary<Characters, List<Guid>> _characterReplacementIds;
 
+    private static Shader _reptileShader;
+
     public static bool HasCharacterOverride;
     private static Guid _currentCharacterOverride;
 
@@ -179,6 +181,30 @@ public static class AssetDatabase
             }
         }
     }
+    public static bool HasReptileShader()
+    {
+        return _reptileShader != null;
+    }
+    public static void SetReptileShader(Shader shader)
+    {
+        if (shader == null || _reptileShader != null)
+        {
+            return;
+        }
+
+        _reptileShader = shader;
+
+        foreach (CharacterDefinition character in _characterObjects.Values)
+        {
+            if (character.UseReptileShader)
+            {
+                foreach (Material material in character.Outfits)
+                {
+                    material.shader = _reptileShader;
+                }
+            }
+        }
+    }
     private static GameObject ConstructCustomCharacterVisual(CharacterDefinition characterDefinition)
     {
         GameObject parent = new GameObject($"{characterDefinition.CharacterName} Visuals");
@@ -189,7 +215,7 @@ public static class AssetDatabase
 
         //InitSkinnedMeshRendererForModel
         SkinnedMeshRenderer meshRenderer = characterModel.GetComponentInChildren<SkinnedMeshRenderer>();
-        meshRenderer.sharedMaterial = UnityEngine.Object.Instantiate(characterDefinition.Outfits[0]);
+        meshRenderer.sharedMaterial = characterDefinition.Outfits[0];
         meshRenderer.receiveShadows = false;
 
         //InitAnimatorForModel

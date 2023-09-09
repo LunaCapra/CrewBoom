@@ -1,5 +1,4 @@
-﻿using BepInEx.Logging;
-using BrcCustomCharactersLib;
+﻿using BrcCustomCharactersLib;
 using HarmonyLib;
 using Reptile;
 using UnityEngine;
@@ -25,12 +24,7 @@ namespace BrcCustomCharacters.Patches
         {
             if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
             {
-                Material material = characterObject.Outfits[outfitIndex];
-                if (characterObject.UseReptileShader)
-                {
-                    material.shader = __result.shader;
-                }
-                __result = material;
+                __result = characterObject.Outfits[outfitIndex];
             }
         }
     }
@@ -48,10 +42,6 @@ namespace BrcCustomCharacters.Patches
                     for (int j = 0; j < 4; j++)
                     {
                         Material material = characterObject.Outfits[j];
-                        if (characterObject.UseReptileShader)
-                        {
-                            material.shader = __result[i, j].shader;
-                        }
                         __result[i, j] = material;
                     }
                 }
