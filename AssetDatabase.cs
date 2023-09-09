@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using BrcCustomCharactersLib;
 using BepInEx.Logging;
+using BrcCustomCharacters.Utility;
 
 public static class AssetDatabase
 {
@@ -13,18 +14,26 @@ public static class AssetDatabase
     private static string ASSET_PATH;
 
     private static Dictionary<Guid, string> _characterBundlePaths;
-    private static Dictionary<Guid, string> _characterObjectNames;
-    private static Dictionary<Guid, AssetBundle> _loadedBundles;
+    private static Dictionary<Guid, CharacterDefinition> _characterObjects;
+    private static Dictionary<Guid, SfxCollection> _characterSfxCollections;
+    private static Dictionary<Guid, GameObject> _characterVisuals;
     private static Dictionary<Characters, List<Guid>> _characterReplacementIds;
+
+    public static bool HasCharacterOverride;
+    private static Guid _currentCharacterOverride;
+
+    private static ManualLogSource DebugLog = BepInEx.Logging.Logger.CreateLogSource("BRCCustomCharacters AssetDatabase");
 
     public static void Initialize(string pluginPath)
     {
         ASSET_PATH = Path.Combine(pluginPath, CHAR_ASSET_FOLDER);
 
         _characterBundlePaths = new Dictionary<Guid, string>();
-        _characterObjectNames = new Dictionary<Guid, string>();
-        _loadedBundles = new Dictionary<Guid, AssetBundle>();
+        _characterObjects = new Dictionary<Guid, CharacterDefinition>();
+        _characterVisuals = new Dictionary<Guid, GameObject>();
+        _characterSfxCollections = new Dictionary<Guid, SfxCollection>();
         _characterReplacementIds = new Dictionary<Characters, List<Guid>>();
+
         var charactersEnum = Enum.GetValues(typeof(Characters));
         foreach (Characters character in charactersEnum)
         {
@@ -37,12 +46,16 @@ public static class AssetDatabase
         }
 
         LoadAllCharacterData();
-        //InitializeAPI();
+        InitializeAPI();
     }
 
     private static void LoadAllCharacterData()
     {
-        ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("BRCCustomCharacters Loader");
+        if (!Directory.Exists(ASSET_PATH))
+        {
+            Directory.CreateDirectory(ASSET_PATH);
+            return;
+        }
 
         foreach (string filePath in Directory.GetFiles(ASSET_PATH))
         {
@@ -61,44 +74,163 @@ public static class AssetDatabase
                             break;
                         }
                     }
-                    if (objects.Length > 0)
+                    if (character != null)
                     {
-                        Guid id = Guid.Parse(character.Id);
-                        _characterBundlePaths.Add(id, filePath);
-                        _characterObjectNames.Add(id, character.gameObject.name);
-                        _characterReplacementIds[(Characters)character.CharacterToReplace].Add(id);
+                        DebugLog.LogInfo($"Found character replacement \"{character.CharacterName}\" over {character.CharacterToReplace}");
+                        if (Guid.TryParse(character.Id, out Guid id))
+                        {
+                            _characterBundlePaths.Add(id, filePath);
+                            //Store a reference to the path of this object so we don't have to go through all GameObjects again
+                            _characterObjects.Add(id, character);
+                            _characterReplacementIds[(Characters)character.CharacterToReplace].Add(id);
 
-                        log.LogInfo($"Found character replacement \"{character.CharacterName}\" over {character.CharacterToReplace}");
-                        log.LogInfo($"\tID: {id}");
+                            DebugLog.LogInfo($"\tID: {id}");
+                        }
+                        else
+                        {
+                            DebugLog.LogError($"\tThis character's GUID ({character.Id}) is invalid! Make sure their bundle was built correctly.");
+                        }
+                    }
+                    else
+                    {
+                        DebugLog.LogWarning($"There is an AssetBundle (\"{bundle.name}\") in the CharAssets directory that does not have a CharacterDefinition.");
                     }
 
-                    bundle.Unload(true);
+                    //bundle.Unload(false);
                 }
             }
         }
-
-        foreach (var bundle in AssetBundle.GetAllLoadedAssetBundles())
+    }
+    public static void InitializeSfxCollectionsForCharacter(Characters character, SfxCollection originalCollection)
+    {
+        if (!_characterReplacementIds.TryGetValue(character, out List<Guid> replacements))
         {
-            log.LogInfo($"Loaded bundle: {bundle.name}");
+            return;
+        }
+        if (replacements == null || replacements.Count == 0)
+        {
+            return;
+        }
+
+        foreach (Guid guid in replacements)
+        {
+            if (GetCharacterReplacement(guid, out CharacterDefinition characterObject))
+            {
+                if (!characterObject.HasVoices())
+                {
+                    return;
+                }
+
+                SfxCollection newCollection = ScriptableObject.CreateInstance<SfxCollection>();
+                newCollection.audioClipContainers = originalCollection.audioClipContainers;
+
+                foreach (SfxCollection.RandomAudioClipContainer originalContainer in newCollection.audioClipContainers)
+                {
+                    switch (originalContainer.clipID)
+                    {
+                        case AudioClipID.VoiceDie:
+                            if (characterObject.VoiceDie.Length > 0)
+                            {
+                                originalContainer.clips = characterObject.VoiceDie;
+                            }
+                            break;
+                        case AudioClipID.VoiceDieFall:
+                            if (characterObject.VoiceDieFall.Length > 0)
+                            {
+                                originalContainer.clips = characterObject.VoiceDieFall;
+                            }
+                            break;
+                        case AudioClipID.VoiceTalk:
+                            if (characterObject.VoiceTalk.Length > 0)
+                            {
+                                originalContainer.clips = characterObject.VoiceTalk;
+                            }
+                            break;
+                        case AudioClipID.VoiceBoostTrick:
+                            if (characterObject.VoiceBoostTrick.Length > 0)
+                            {
+                                originalContainer.clips = characterObject.VoiceBoostTrick;
+                            }
+                            break;
+                        case AudioClipID.VoiceCombo:
+                            if (characterObject.VoiceCombo.Length > 0)
+                            {
+                                originalContainer.clips = characterObject.VoiceCombo;
+                            }
+                            break;
+                        case AudioClipID.VoiceGetHit:
+                            if (characterObject.VoiceGetHit.Length > 0)
+                            {
+                                originalContainer.clips = characterObject.VoiceGetHit;
+                            }
+                            break;
+                        case AudioClipID.VoiceJump:
+                            if (characterObject.VoiceJump.Length > 0)
+                            {
+                                originalContainer.clips = characterObject.VoiceJump;
+                            }
+                            break;
+                    }
+                }
+
+                _characterSfxCollections.Add(guid, newCollection);
+
+                DebugLog.LogInfo($"Initialized voice library for \"{characterObject.CharacterName}\" (replaces {characterObject.CharacterToReplace})");
+            }
         }
     }
+    private static GameObject ConstructCustomCharacterVisual(CharacterDefinition characterDefinition)
+    {
+        GameObject parent = new GameObject($"{characterDefinition.CharacterName} Visuals");
+        GameObject characterModel = UnityEngine.Object.Instantiate(characterDefinition.gameObject);
 
-    //private static void InitializeAPI()
-    //{
-    //    Dictionary<int, Guid> userReplacements = new Dictionary<int, Guid>();
+        //InitCharacterModel
+        characterModel.transform.SetParent(parent.transform, false);
 
-    //    var values = Enum.GetValues(typeof(Characters));
-    //    for (int i = 0; i < values.Length; i++)
-    //    {
-    //        Characters character = (Characters)values.GetValue(i);
-    //        if (GetFirstOrConfigCharacterId(character, out Guid id))
-    //        {
-    //            userReplacements.Add(i, id);
-    //        }
-    //    }
+        //InitSkinnedMeshRendererForModel
+        SkinnedMeshRenderer meshRenderer = characterModel.GetComponentInChildren<SkinnedMeshRenderer>();
+        meshRenderer.sharedMaterial = UnityEngine.Object.Instantiate(characterDefinition.Outfits[0]);
+        meshRenderer.receiveShadows = false;
 
-    //    BrcCustomCharactersAPI.Database.Initialize(userReplacements);
-    //}
+        //InitAnimatorForModel
+        characterModel.GetComponentInChildren<Animator>().applyRootMotion = false;
+
+        //InitCharacterVisuals
+        parent.SetActive(false);
+
+        return parent;
+    }
+
+    private static void InitializeAPI()
+    {
+        Dictionary<int, Guid> userReplacements = new Dictionary<int, Guid>();
+
+        var values = Enum.GetValues(typeof(Characters));
+        for (int i = 0; i < values.Length; i++)
+        {
+            Characters character = (Characters)values.GetValue(i);
+            if (GetFirstOrConfigCharacterId(character, out Guid id))
+            {
+                userReplacements.Add(i, id);
+            }
+        }
+
+        BrcCustomCharactersAPI.Database.Initialize(userReplacements);
+        BrcCustomCharactersAPI.Database.OnOverride += SetCharacterOverride;
+    }
+    private static void SetCharacterOverride(Guid id)
+    {
+        HasCharacterOverride = true;
+        _currentCharacterOverride = id;
+
+        DebugLog.LogInfo($"Received override for next character {id}");
+    }
+    public static void SetCharacterOverrideDone()
+    {
+        HasCharacterOverride = false;
+
+        DebugLog.LogInfo("Finished override");
+    }
 
     public static bool GetCharacterName(Characters character, out string name)
     {
@@ -181,29 +313,32 @@ public static class AssetDatabase
         }
     }
 
-    private static AssetBundle GetCharacterBundle(Guid id)
-    {
-        if (!_loadedBundles.ContainsKey(id) || _loadedBundles[id] == null)
-        {
-            _loadedBundles[id] = AssetBundle.LoadFromFile(_characterBundlePaths[id]);
-        }
-
-        return _loadedBundles[id];
-    }
     private static bool GetFirstOrConfigCharacterId(Characters character, out Guid guid)
     {
         guid = Guid.Empty;
 
-        if (!_characterReplacementIds.ContainsKey(character) ||
-            _characterReplacementIds[character] == null ||
-            _characterReplacementIds[character].Count == 0)
+        if (HasCharacterOverride)
+        {
+            DebugLog.LogInfo($"Getting skin override for {character} with ID {_currentCharacterOverride}");
+            if (_characterBundlePaths.ContainsKey(_currentCharacterOverride) && _characterObjects.ContainsKey(_currentCharacterOverride))
+            {
+                DebugLog.LogInfo("Override was found locally.");
+                guid = _currentCharacterOverride;
+                return true;
+            }
+        }
+
+        if (!_characterReplacementIds.TryGetValue(character, out List<Guid> replacements) ||
+            replacements == null ||
+            replacements.Count == 0)
         {
             return false;
         }
 
+        //Check if the config has an override ID for this character
         if (AssetConfig.GetCharacterOverride(character, out Guid id, out bool isDisabled))
         {
-            if (_characterBundlePaths.ContainsKey(id) && _characterObjectNames.ContainsKey(id))
+            if (_characterBundlePaths.ContainsKey(id) && _characterObjects.ContainsKey(id))
             {
                 guid = id;
                 return true;
@@ -211,37 +346,25 @@ public static class AssetDatabase
         }
         else
         {
+            //If the override is OFF, ignore any skins for the local player
             if (isDisabled)
             {
                 return false;
             }
         }
 
-        if (_characterReplacementIds[character].Count > 0)
-        {
-            guid = _characterReplacementIds[character][0];
-            return true;
-        }
-
-        return false;
+        //If there's no override, just pick the first ID available
+        guid = replacements[0];
+        return true;
     }
 
     public static bool GetCharacterReplacement(Guid id, out CharacterDefinition characterObject)
     {
-        characterObject = null;
-
-        if (!_characterBundlePaths.ContainsKey(id))
+        if (!_characterObjects.TryGetValue(id, out characterObject))
         {
             return false;
         }
 
-        AssetBundle characterBundle = GetCharacterBundle(id);
-        if (characterBundle == null)
-        {
-            return false;
-        }
-
-        characterObject = characterBundle.LoadAsset<GameObject>(_characterObjectNames[id]).GetComponent<CharacterDefinition>();
         return true;
     }
     public static bool GetCharacterReplacement(Characters character, out CharacterDefinition characterObject)
@@ -257,6 +380,53 @@ public static class AssetDatabase
     }
     public static bool HasCharacter(Characters character)
     {
-        return GetFirstOrConfigCharacterId(character, out Guid _);
+        if (!_characterReplacementIds.TryGetValue(character, out List<Guid> replacements))
+        {
+            return false;
+        }
+
+        return replacements != null && replacements.Count > 0;
+    }
+    public static bool GetCharacterVisual(Characters character, out GameObject characterVisualObject)
+    {
+        characterVisualObject = null;
+
+        if (GetFirstOrConfigCharacterId(character, out Guid guid))
+        {
+            if (!_characterVisuals.TryGetValue(guid, out characterVisualObject))
+            {
+                if (GetCharacterReplacement(guid, out CharacterDefinition characterObject))
+                {
+                    _characterVisuals.Add(guid, ConstructCustomCharacterVisual(characterObject));
+                    characterVisualObject = _characterVisuals[guid];
+                }
+
+                return true;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public static void DisposeOfVisuals()
+    {
+        _characterVisuals.Clear();
+    }
+    public static bool GetCharacterSfxCollection(Characters character, out SfxCollection collection)
+    {
+        collection = null;
+
+        if (GetFirstOrConfigCharacterId(character, out Guid id))
+        {
+            if (_characterSfxCollections.TryGetValue(id, out collection))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

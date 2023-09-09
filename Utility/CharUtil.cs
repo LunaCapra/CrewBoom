@@ -21,5 +21,61 @@ namespace BrcCustomCharacters
         {
             return string.Format(MATERIAL_FORMAT, character.ToString(), outfitIndex.ToString());
         }
+
+        public static string GetCharacterFromGraffitiTitle(Characters character)
+        {
+            switch (character)
+            {
+                case Characters.girl1:
+                    return "Vinyl";
+                case Characters.frank:
+                case Characters.prince:
+                    return "‘F’ Is For Family";
+                case Characters.ringdude:
+                    return "Coil";
+                case Characters.metalHead:
+                case Characters.legendMetalHead:
+                    return "Red";
+                case Characters.blockGuy:
+                    return "Tryce";
+                case Characters.spaceGirl:
+                    return "Bel";
+                case Characters.angel:
+                    return "Rave";
+                case Characters.eightBall:
+                case Characters.eightBallBoss:
+                    return "8O TUP";
+                case Characters.dummy:
+                    return "Solace";
+                case Characters.dj:
+                case Characters.futureGirl:
+                    return "Eye-con";
+                case Characters.medusa:
+                    return "Elegant E";
+                case Characters.boarder:
+                    return "DT";
+                case Characters.headMan:
+                case Characters.headManNoJetpack:
+                    return "Faux";
+                case Characters.jetpackBossPlayer:
+                    return "Irene";
+                case Characters.legendFace:
+                    return "Felix";
+                case Characters.oldheadPlayer:
+                    return "Boombap";
+                case Characters.robot:
+                    return "Base";
+                case Characters.skate:
+                    return "Jay";
+                case Characters.wideKid:
+                    return "Mesh";
+                case Characters.pufferGirl:
+                    return "Rise";
+                case Characters.bunGirl:
+                    return "Shine";
+                default:
+                    return "Red";
+            }
+        }
     }
 }

@@ -32,6 +32,12 @@
 	<Reference Include="BrcCustomCharactersLib">
 		<HintPath>libs/BrcCustomCharactersLib.dll</HintPath>
 	</Reference>
+  </ItemGroup>  
+  
+  <ItemGroup>
+	<Reference Include="BrcCustomCharactersAPI">
+		<HintPath>libs/BrcCustomCharactersAPI.dll</HintPath>
+	</Reference>
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">

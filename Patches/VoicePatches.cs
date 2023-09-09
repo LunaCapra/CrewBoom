@@ -1,67 +1,60 @@
-﻿using UnityEngine;
-using Reptile;
+﻿using Reptile;
 using HarmonyLib;
 using System.Collections.Generic;
-using BrcCustomCharactersLib;
+using System;
 
 namespace BrcCustomCharacters.Patches
 {
     [HarmonyPatch(typeof(Reptile.SfxLibrary), "GenerateEnumDictionary")]
-    public class VoiceLoadPatch
+    public class InitSfxLibraryPatch
     {
         public static void Postfix(SfxLibrary __instance)
         {
             foreach (KeyValuePair<SfxCollectionID, SfxCollection> collectionPair in __instance.sfxCollectionIDDictionary)
             {
                 Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionPair.Key);
-                if (AssetDatabase.GetCharacterReplacement(correspondingCharacter, out CharacterDefinition character))
+                AssetDatabase.InitializeSfxCollectionsForCharacter(correspondingCharacter, collectionPair.Value);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Reptile.SfxLibrary), nameof(Reptile.SfxLibrary.GetSfxCollectionById))]
+    public class GetSfxCollectionIdPatch
+    {
+        public static void Postfix(SfxCollectionID sfxCollectionId, ref SfxCollection __result, SfxLibrary __instance)
+        {
+            if (__result == null)
+            {
+                return;
+            }
+
+            Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(sfxCollectionId);
+            if (AssetDatabase.GetCharacterSfxCollection(correspondingCharacter, out SfxCollection collection))
+            {
+                __result = collection;
+            }
+        }
+    }
+
+    public class GetSfxCollectionStringPatch
+    {
+        public static void Postfix(string sfxCollectionName, ref SfxCollection __result, SfxLibrary __instance)
+        {
+            if (__result == null)
+            {
+                return;
+            }
+
+            foreach (KeyValuePair<string, SfxCollection> stringPair in __instance.sfxCollectionDictionary)
+            {
+                if (!(stringPair.Value == null) && stringPair.Value.collectionName.Equals(sfxCollectionName))
                 {
-                    foreach (SfxCollection.RandomAudioClipContainer originalContainer in collectionPair.Value.audioClipContainers)
+                    if (Enum.TryParse(stringPair.Key, out SfxCollectionID collectionId))
                     {
-                        switch (originalContainer.clipID)
+                        Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionId);
+                        if (AssetDatabase.GetCharacterSfxCollection(correspondingCharacter, out SfxCollection collection))
                         {
-                            case AudioClipID.VoiceDie:
-                                if (character.VoiceDie.Length > 0)
-                                {
-                                    originalContainer.clips = character.VoiceDie;
-                                }
-                                break;
-                            case AudioClipID.VoiceDieFall:
-                                if (character.VoiceDieFall.Length > 0)
-                                {
-                                    originalContainer.clips = character.VoiceDieFall;
-                                }
-                                break;
-                            case AudioClipID.VoiceTalk:
-                                if (character.VoiceTalk.Length > 0)
-                                {
-                                    originalContainer.clips = character.VoiceTalk;
-                                }
-                                break;
-                            case AudioClipID.VoiceBoostTrick:
-                                if (character.VoiceBoostTrick.Length > 0)
-                                {
-                                    originalContainer.clips = character.VoiceBoostTrick;
-                                }
-                                break;
-                            case AudioClipID.VoiceCombo:
-                                if (character.VoiceCombo.Length > 0)
-                                {
-                                    originalContainer.clips = character.VoiceCombo;
-                                }
-                                break;
-                            case AudioClipID.VoiceGetHit:
-                                if (character.VoiceGetHit.Length > 0)
-                                {
-                                    originalContainer.clips = character.VoiceGetHit;
-                                }
-                                break;
-                            case AudioClipID.VoiceJump:
-                                if (character.VoiceJump.Length > 0)
-                                {
-                                    originalContainer.clips = character.VoiceJump;
-                                }
-                                break;
+                            __result = collection;
                         }
                     }
                 }

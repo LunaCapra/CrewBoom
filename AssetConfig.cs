@@ -49,15 +49,12 @@ namespace BrcCustomCharacters
                 return false;
             }
 
-            try
+            if (Guid.TryParse(guidString, out id))
             {
-                id = Guid.Parse(guidString);
                 return true;
             }
-            catch
-            {
-                return false;
-            }
+
+            return false;
         }
     }
 }

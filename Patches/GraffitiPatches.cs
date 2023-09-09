@@ -1,9 +1,7 @@
-﻿using BepInEx.Logging;
-using BrcCustomCharactersLib;
+﻿using BrcCustomCharactersLib;
 using HarmonyLib;
 using Reptile;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -12,8 +10,11 @@ namespace BrcCustomCharacters.Patches
     [HarmonyPatch(typeof(Reptile.GraffitiLoader), nameof(Reptile.GraffitiLoader.LoadGraffitiArtInfo))]
     public class GraffitiLoadPatch
     {
-        public static void Postfix(GraffitiArtInfo ___graffitiArtInfo)
+        public static void Postfix(GraffitiLoader __instance)
         {
+            Assets assets = (Assets)__instance.GetField("assets").GetValue(__instance);
+            GraffitiArtInfo graffitiArtInfo = assets.LoadAssetFromBundle<GraffitiArtInfo>("graffiti", "graffitiartinfo");
+
             for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
             {
                 Characters character = (Characters)i;
@@ -21,13 +22,16 @@ namespace BrcCustomCharacters.Patches
                 {
                     if (characterObject.Graffiti)
                     {
-                        GraffitiArt graffiti = ___graffitiArtInfo.FindByCharacter(character);
+                        GraffitiArt graffiti = graffitiArtInfo.FindByCharacter(character);
 
                         Texture mainTex = characterObject.Graffiti.mainTexture;
+                        graffiti.title = characterObject.GraffitiName;
                         graffiti.graffitiMaterial.mainTexture = mainTex;
                     }
                 }
             }
+
+            __instance.SetField("graffitiArtInfo", graffitiArtInfo);
         }
     }
 
@@ -63,9 +67,7 @@ namespace BrcCustomCharacters.Patches
     }
 
     //Note:
-    //Just the UI text is patched for the new title rather than the actual title in the data
-    //this is because when the title doesn't match what the game expects it can't load anything
-    //It also breaks the graffiti if you play without the same character mod
+    //Patching just the UI title since the characters are replacements
     [HarmonyPatch(typeof(Reptile.GraffitiGame), "SetStateVisual")]
     public class GraffitiVisualPatch
     {

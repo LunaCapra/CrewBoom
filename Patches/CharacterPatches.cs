@@ -11,13 +11,6 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, ref GameObject __result)
         {
-            //if (BrcCustomCharactersAPI.Database.GetNextOverride(out System.Guid id))
-            //{
-            //    AssetDatabase.GetCharacterReplacement(id, out CharacterDefinition overrideCharacter);
-            //    __result = overrideCharacter.gameObject;
-            //    return;
-            //}
-
             if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
             {
                 __result = characterObject.gameObject;
@@ -30,13 +23,6 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, int outfitIndex, ref Material __result)
         {
-            //if (BrcCustomCharactersAPI.Database.GetNextOverride(out System.Guid id))
-            //{
-            //    AssetDatabase.GetCharacterReplacement(id, out CharacterDefinition overrideCharacter);
-            //    __result = overrideCharacter.Outfits[outfitIndex];
-            //    return;
-            //}
-
             if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
             {
                 Material material = characterObject.Outfits[outfitIndex];
