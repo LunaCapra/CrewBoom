@@ -5,7 +5,7 @@ using System;
 
 namespace BrcCustomCharacters.Patches
 {
-    [HarmonyPatch(typeof(Reptile.SfxLibrary), "GenerateEnumDictionary")]
+    [HarmonyPatch(typeof(Reptile.SfxLibrary), nameof(Reptile.SfxLibrary.Init))]
     public class InitSfxLibraryPatch
     {
         public static void Postfix(SfxLibrary __instance)
@@ -23,11 +23,6 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(SfxCollectionID sfxCollectionId, ref SfxCollection __result, SfxLibrary __instance)
         {
-            if (__result == null)
-            {
-                return;
-            }
-
             Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(sfxCollectionId);
             if (AssetDatabase.GetCharacterSfxCollection(correspondingCharacter, out SfxCollection collection))
             {
@@ -40,11 +35,6 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(string sfxCollectionName, ref SfxCollection __result, SfxLibrary __instance)
         {
-            if (__result == null)
-            {
-                return;
-            }
-
             foreach (KeyValuePair<string, SfxCollection> stringPair in __instance.sfxCollectionDictionary)
             {
                 if (!(stringPair.Value == null) && stringPair.Value.collectionName.Equals(sfxCollectionName))

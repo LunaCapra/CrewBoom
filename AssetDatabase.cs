@@ -7,6 +7,7 @@ using System;
 using BrcCustomCharactersLib;
 using BepInEx.Logging;
 using BrcCustomCharacters.Utility;
+using System.Linq;
 
 public static class AssetDatabase
 {
@@ -124,7 +125,14 @@ public static class AssetDatabase
                 }
 
                 SfxCollection newCollection = ScriptableObject.CreateInstance<SfxCollection>();
-                newCollection.audioClipContainers = originalCollection.audioClipContainers;
+                newCollection.audioClipContainers = new SfxCollection.RandomAudioClipContainer[originalCollection.audioClipContainers.Length];
+                for (int i = 0; i < originalCollection.audioClipContainers.Length; i++)
+                {
+                    newCollection.audioClipContainers[i] = new SfxCollection.RandomAudioClipContainer();
+                    newCollection.audioClipContainers[i].clipID = originalCollection.audioClipContainers[i].clipID;
+                    newCollection.audioClipContainers[i].clips = null;
+                    newCollection.audioClipContainers[i].lastRandomClip = 0;
+                }
 
                 foreach (SfxCollection.RandomAudioClipContainer originalContainer in newCollection.audioClipContainers)
                 {

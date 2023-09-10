@@ -11,16 +11,8 @@ namespace BrcCustomCharacters.Patches
                                    RuntimeAnimatorController controller,
                                    bool IK,
                                    float setGroundAngleLimit,
-                                   ref CharacterVisual __result,
-                                   CharacterConstructor __instance)
+                                   ref CharacterVisual __result)
         {
-            if (!AssetDatabase.HasReptileShader())
-            {
-                Material originalMaterial = __instance.CreateCharacterMaterial(Characters.metalHead, 0);
-                AssetDatabase.SetReptileShader(originalMaterial.shader);
-                Object.Destroy(originalMaterial);
-            }
-
             if (AssetDatabase.GetCharacterVisual(character, out GameObject characterVisualObject))
             {
                 CharacterVisual characterVisual = Object.Instantiate(characterVisualObject).AddComponent<CharacterVisual>();
