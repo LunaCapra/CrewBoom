@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BrcCustomCharacters.Data;
+using HarmonyLib;
 using Reptile;
 namespace BrcCustomCharacters.Patches
 {
@@ -7,9 +8,9 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, ref string __result)
         {
-            if (AssetDatabase.GetCharacterName(character, out string name))
+            if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
             {
-                __result = name;
+                __result = customCharacter.Definition.CharacterName;
             }
         }
     }

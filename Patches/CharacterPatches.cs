@@ -1,4 +1,5 @@
-﻿using BrcCustomCharactersLib;
+﻿using BrcCustomCharacters.Data;
+using BrcCustomCharactersLib;
 using HarmonyLib;
 using Reptile;
 using UnityEngine;
@@ -10,9 +11,9 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, ref GameObject __result)
         {
-            if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
+            if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
             {
-                __result = characterObject.gameObject;
+                __result = customCharacter.Definition.gameObject;
             }
         }
     }
@@ -22,9 +23,9 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, int outfitIndex, ref Material __result)
         {
-            if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
+            if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
             {
-                __result = characterObject.Outfits[outfitIndex];
+                __result = customCharacter.Definition.Outfits[outfitIndex];
             }
         }
     }
@@ -37,11 +38,11 @@ namespace BrcCustomCharacters.Patches
             for (int i = 0; i < __result.Length; i++)
             {
                 Characters character = (Characters)i;
-                if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
+                if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
                 {
                     for (int j = 0; j < 4; j++)
                     {
-                        Material material = characterObject.Outfits[j];
+                        Material material = customCharacter.Definition.Outfits[j];
                         __result[i, j] = material;
                     }
                 }
@@ -54,9 +55,9 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, ref bool ___canBlink)
         {
-            if (AssetDatabase.GetCharacterReplacement(character, out CharacterDefinition characterObject))
+            if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
             {
-                ___canBlink = characterObject.CanBlink;
+                ___canBlink = customCharacter.Definition.CanBlink;
             }
         }
     }

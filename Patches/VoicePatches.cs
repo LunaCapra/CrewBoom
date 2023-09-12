@@ -2,6 +2,8 @@
 using HarmonyLib;
 using System.Collections.Generic;
 using System;
+using BrcCustomCharacters.Data;
+using BepInEx.Logging;
 
 namespace BrcCustomCharacters.Patches
 {
@@ -10,10 +12,12 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(SfxLibrary __instance)
         {
+            ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("Voice test");
+
             foreach (KeyValuePair<SfxCollectionID, SfxCollection> collectionPair in __instance.sfxCollectionIDDictionary)
             {
                 Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionPair.Key);
-                AssetDatabase.InitializeSfxCollectionsForCharacter(correspondingCharacter, collectionPair.Value);
+                AssetDatabase.InitializeMissingSfxCollections(correspondingCharacter, collectionPair.Value);
             }
         }
     }
@@ -24,9 +28,9 @@ namespace BrcCustomCharacters.Patches
         public static void Postfix(SfxCollectionID sfxCollectionId, ref SfxCollection __result, SfxLibrary __instance)
         {
             Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(sfxCollectionId);
-            if (AssetDatabase.GetCharacterSfxCollection(correspondingCharacter, out SfxCollection collection))
+            if (AssetDatabase.GetCharacter(correspondingCharacter, out CustomCharacter customCharacter))
             {
-                __result = collection;
+                __result = customCharacter.Sfx;
             }
         }
     }
@@ -42,9 +46,9 @@ namespace BrcCustomCharacters.Patches
                     if (Enum.TryParse(stringPair.Key, out SfxCollectionID collectionId))
                     {
                         Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionId);
-                        if (AssetDatabase.GetCharacterSfxCollection(correspondingCharacter, out SfxCollection collection))
+                        if (AssetDatabase.GetCharacter(correspondingCharacter, out CustomCharacter customCharacter))
                         {
-                            __result = collection;
+                            __result = customCharacter.Sfx;
                         }
                     }
                 }

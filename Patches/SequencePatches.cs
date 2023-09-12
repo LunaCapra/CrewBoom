@@ -1,4 +1,5 @@
 ﻿using BepInEx.Logging;
+using BrcCustomCharacters.Data;
 using BrcCustomCharactersLib;
 using HarmonyLib;
 using Reptile;
@@ -75,7 +76,7 @@ namespace BrcCustomCharacters.Patches
 
         private static void SwapOutfitSwappable(OutfitSwappableCharacter swappable)
         {
-            if (!AssetDatabase.GetCharacterReplacement(swappable.Character, out CharacterDefinition character))
+            if (!AssetDatabase.GetCharacter(swappable.Character, out CustomCharacter character))
             {
                 return;
             }
@@ -85,7 +86,7 @@ namespace BrcCustomCharacters.Patches
                 dynamicBone.enabled = false;
             }
 
-            GameObject customCharacter = Object.Instantiate(character, swappable.transform).gameObject;
+            GameObject customCharacter = Object.Instantiate(character.Definition.gameObject, swappable.transform).gameObject;
 
             Animator originalAnimator = null;
             foreach (Transform child in swappable.transform)
@@ -131,7 +132,7 @@ namespace BrcCustomCharacters.Patches
             StoryBlinkAnimation blink = originalAnimator.GetComponent<StoryBlinkAnimation>();
             if (blink)
             {
-                if (character.CanBlink)
+                if (character.Definition.CanBlink)
                 {
                     blink.mainRenderer = customRenderer;
                     blink.characterMesh = customRenderer.sharedMesh;
@@ -172,14 +173,7 @@ namespace BrcCustomCharacters.Patches
             for (int i = 0; i < source.childCount; i++)
             {
                 Transform child = source.GetChild(i);
-
-                Vector3 localPosition = child.localPosition;
-                Quaternion localRotation = child.localRotation;
-                Vector3 localScale = child.localScale;
-
-                child.SetParent(target);
-                child.SetLocalPositionAndRotation(localPosition, localRotation);
-                child.localScale = localScale;
+                child.SetParent(target, false);
             }
         }
     }

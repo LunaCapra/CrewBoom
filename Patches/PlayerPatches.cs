@@ -1,7 +1,4 @@
-﻿using BepInEx.Logging;
-using BrcCustomCharactersLib;
-using HarmonyLib;
-using Reptile;
+﻿using HarmonyLib;
 
 namespace BrcCustomCharacters.Patches
 {

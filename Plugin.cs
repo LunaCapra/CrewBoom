@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using BrcCustomCharacters.Data;
 using HarmonyLib;
 using Reptile;
 using System.Collections;

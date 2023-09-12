@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BrcCustomCharacters.Data;
+using HarmonyLib;
 using Reptile;
 using UnityEngine;
 
@@ -13,9 +14,9 @@ namespace BrcCustomCharacters.Patches
                                    float setGroundAngleLimit,
                                    ref CharacterVisual __result)
         {
-            if (AssetDatabase.GetCharacterVisual(character, out GameObject characterVisualObject))
+            if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
             {
-                CharacterVisual characterVisual = Object.Instantiate(characterVisualObject).AddComponent<CharacterVisual>();
+                CharacterVisual characterVisual = Object.Instantiate(customCharacter.Visual).AddComponent<CharacterVisual>();
                 characterVisual.Init(character, controller, IK, setGroundAngleLimit);
                 characterVisual.gameObject.SetActive(true);
                 __result = characterVisual;
@@ -23,15 +24,6 @@ namespace BrcCustomCharacters.Patches
             }
 
             return true;
-        }
-    }
-
-    [HarmonyPatch(typeof(Reptile.CharacterConstructor), nameof(Reptile.CharacterConstructor.Dispose))]
-    public class ConstructorDisposePatch
-    {
-        public static void Postfix()
-        {
-            AssetDatabase.DisposeOfVisuals();
         }
     }
 }

@@ -3,6 +3,7 @@ using Reptile;
 using HarmonyLib;
 using BepInEx.Logging;
 using BrcCustomCharactersLib;
+using BrcCustomCharacters.Data;
 
 namespace BrcCustomCharacters.Patches
 {
@@ -16,14 +17,14 @@ namespace BrcCustomCharacters.Patches
             {
                 foreach (OutfitSwappableCharacter npcCharacter in characters)
                 {
-                    if (AssetDatabase.GetCharacterReplacement(npcCharacter.Character, out CharacterDefinition character))
+                    if (AssetDatabase.GetCharacter(npcCharacter.Character, out CustomCharacter character))
                     {
                         foreach (DynamicBone dynamicBone in npcCharacter.GetComponents<DynamicBone>())
                         {
                             dynamicBone.enabled = false;
                         }
 
-                        GameObject customCharacter = Object.Instantiate(character, npcCharacter.transform).gameObject;
+                        GameObject customCharacter = Object.Instantiate(character.Definition.gameObject, npcCharacter.transform).gameObject;
 
                         Animator originalAnimator = npcCharacter.GetComponentInChildren<Animator>(true);
                         Animator customAnimator = customCharacter.GetComponent<Animator>();
@@ -37,7 +38,12 @@ namespace BrcCustomCharacters.Patches
 
                         customCharacter.AddComponent<LookAtIKComponent>();
                         customCharacter.AddComponent<DummyAnimationEventRelay>();
-                        //customCharacter.AddComponent<StoryBlinkAnimation>();
+                        if (character.Definition.CanBlink)
+                        {
+                            StoryBlinkAnimation blinkAnimation = customCharacter.AddComponent<StoryBlinkAnimation>();
+                            blinkAnimation.mainRenderer = customRenderer;
+                            blinkAnimation.characterMesh = customRenderer.sharedMesh;
+                        }
 
                         customCharacter.SetActive(originalAnimator.gameObject.activeSelf);
 
@@ -47,9 +53,9 @@ namespace BrcCustomCharacters.Patches
                     }
                 }
             }
-            else if (AssetDatabase.GetCharacterReplacement(___character, out CharacterDefinition character))
+            else if (AssetDatabase.GetCharacter(___character, out CustomCharacter character))
             {
-                GameObject customCharacter = Object.Instantiate(character, __instance.transform).gameObject;
+                GameObject customCharacter = Object.Instantiate(character.Definition.gameObject, __instance.transform).gameObject;
 
                 Animator originalAnimator = __instance.transform.GetComponentInChildren<Animator>(true);
                 Animator customAnimator = customCharacter.GetComponent<Animator>();
