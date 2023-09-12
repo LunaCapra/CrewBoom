@@ -2,6 +2,7 @@
 using BrcCustomCharacters.Utility;
 using BrcCustomCharactersLib;
 using Reptile;
+using Reptile.Phone;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace BrcCustomCharacters.Data
             }
         }
         private GameObject _visual;
+        public GraffitiArt Graffiti { get; private set; }
 
         private static readonly List<AudioClipID> VOICE_IDS = new List<AudioClipID>()
         {
@@ -42,6 +44,7 @@ namespace BrcCustomCharacters.Data
             Definition = definition;
 
             CreateSfxCollection();
+            CreateGraffiti();
 
             ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("BrcCustomCharacters Character");
             if (Sfx != null)
@@ -139,6 +142,31 @@ namespace BrcCustomCharacters.Data
 
             Sfx = newCollection;
         }
+        private void CreateGraffiti()
+        {
+            if (Definition.Graffiti == null ||
+                Definition.GraffitiName == string.Empty ||
+                Definition.GraffitiArtist == string.Empty)
+            {
+                return;
+            }
+
+            GraffitiArt graffiti = new GraffitiArt();
+            graffiti.graffitiSize = GraffitiSize.S;
+            graffiti.graffitiMaterial = Definition.Graffiti;
+            graffiti.title = Definition.GraffitiName;
+            graffiti.artistName = Definition.GraffitiArtist;
+
+            GraffitiAppEntry appEntry = ScriptableObject.CreateInstance<GraffitiAppEntry>();
+            appEntry.Size = GraffitiSize.S;
+            appEntry.GraffitiTexture = Definition.Graffiti.mainTexture;
+            appEntry.Title = Definition.GraffitiName;
+            appEntry.Artist = Definition.GraffitiArtist;
+
+            graffiti.unlockable = appEntry;
+
+            Graffiti = graffiti;
+        }
 
         public void ApplySfxCollection(SfxCollection collection)
         {
@@ -151,19 +179,12 @@ namespace BrcCustomCharacters.Data
             {
                 foreach (SfxCollection.RandomAudioClipContainer container in collection.audioClipContainers)
                 {
+                    //Add any missing entries
                     if (!VOICE_IDS.Contains(container.clipID))
                     {
                         Array.Resize(ref Sfx.audioClipContainers, Sfx.audioClipContainers.Length + 1);
                         Sfx.audioClipContainers[Sfx.audioClipContainers.Length] = container;
                     }
-                    //else
-                    //{
-                    //    SfxCollection.RandomAudioClipContainer correspondingContainer = Sfx.audioClipContainers.First(x => x.clipID == container.clipID);
-                    //    if (correspondingContainer.clips == null)
-                    //    {
-                    //        correspondingContainer.clips = container.clips;
-                    //    }
-                    //}
                 }
             }
         }
@@ -173,6 +194,15 @@ namespace BrcCustomCharacters.Data
             {
                 material.shader = shader;
             }
+        }
+        public void ApplyShaderToGraffiti(Shader shader)
+        {
+            if (Graffiti == null)
+            {
+                return;
+            }
+
+            Graffiti.graffitiMaterial.shader = shader;
         }
     }
 }

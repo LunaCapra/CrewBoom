@@ -14,7 +14,7 @@ namespace BrcCustomCharacters.Patches
                                    float setGroundAngleLimit,
                                    ref CharacterVisual __result)
         {
-            if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+            if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
             {
                 CharacterVisual characterVisual = Object.Instantiate(customCharacter.Visual).AddComponent<CharacterVisual>();
                 characterVisual.Init(character, controller, IK, setGroundAngleLimit);

@@ -9,7 +9,7 @@ using BrcCustomCharacters.Data;
 
 namespace BrcCustomCharacters
 {
-    public static class AssetDatabase
+    public static class CharacterDatabase
     {
         private const string CHAR_ASSET_FOLDER = "brcCustomCharacters/CharAssets";
         private static string ASSET_PATH;
@@ -17,8 +17,6 @@ namespace BrcCustomCharacters
         private static Dictionary<Guid, string> _characterBundlePaths;
         private static Dictionary<Guid, CustomCharacter> _customCharacters;
         private static Dictionary<Characters, List<Guid>> _characterReplacementIds;
-
-        private static Shader _reptileShader;
 
         public static bool HasCharacterOverride;
         private static Guid _currentCharacterOverride;
@@ -103,18 +101,12 @@ namespace BrcCustomCharacters
             }
         }
 
-        public static bool HasReptileShader()
+        public static void SetOutfitShader(Shader shader)
         {
-            return _reptileShader != null;
-        }
-        public static void SetReptileShader(Shader shader)
-        {
-            if (shader == null || _reptileShader != null)
+            if (shader == null)
             {
                 return;
             }
-
-            _reptileShader = shader;
 
             foreach (CustomCharacter character in _customCharacters.Values)
             {
@@ -122,6 +114,18 @@ namespace BrcCustomCharacters
                 {
                     character.ApplyShaderToOutfits(shader);
                 }
+            }
+        }
+        public static void SetGraffitiShader(Shader shader)
+        {
+            if (shader == null)
+            {
+                return;
+            }
+
+            foreach (CustomCharacter character in _customCharacters.Values)
+            {
+                character.ApplyShaderToGraffiti(shader);
             }
         }
 
@@ -277,7 +281,7 @@ namespace BrcCustomCharacters
             }
 
             //Check if the config has an override ID for this character
-            if (AssetConfig.GetCharacterOverride(character, out Guid id, out bool isDisabled))
+            if (CharacterConfig.GetCharacterOverride(character, out Guid id, out bool isDisabled))
             {
                 if (_characterBundlePaths.ContainsKey(id) && _customCharacters.ContainsKey(id))
                 {

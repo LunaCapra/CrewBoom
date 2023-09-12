@@ -11,7 +11,7 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, ref GameObject __result)
         {
-            if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+            if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
             {
                 __result = customCharacter.Definition.gameObject;
             }
@@ -23,7 +23,7 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, int outfitIndex, ref Material __result)
         {
-            if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+            if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
             {
                 __result = customCharacter.Definition.Outfits[outfitIndex];
             }
@@ -38,7 +38,7 @@ namespace BrcCustomCharacters.Patches
             for (int i = 0; i < __result.Length; i++)
             {
                 Characters character = (Characters)i;
-                if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+                if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
                 {
                     for (int j = 0; j < 4; j++)
                     {
@@ -55,7 +55,7 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(Characters character, ref bool ___canBlink)
         {
-            if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+            if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
             {
                 ___canBlink = customCharacter.Definition.CanBlink;
             }
@@ -83,7 +83,7 @@ namespace BrcCustomCharacters.Patches
             }
 
             Characters character = (Characters)player.GetField("character").GetValue(player);
-            if (AssetDatabase.HasCharacter(character))
+            if (CharacterDatabase.HasCharacter(character))
             {
                 Transform offsetL = ___footL.Find(CharUtil.SKATE_OFFSET_L);
                 Transform offsetR = ___footR.Find(CharUtil.SKATE_OFFSET_R);

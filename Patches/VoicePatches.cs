@@ -17,7 +17,7 @@ namespace BrcCustomCharacters.Patches
             foreach (KeyValuePair<SfxCollectionID, SfxCollection> collectionPair in __instance.sfxCollectionIDDictionary)
             {
                 Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionPair.Key);
-                AssetDatabase.InitializeMissingSfxCollections(correspondingCharacter, collectionPair.Value);
+                CharacterDatabase.InitializeMissingSfxCollections(correspondingCharacter, collectionPair.Value);
             }
         }
     }
@@ -28,7 +28,7 @@ namespace BrcCustomCharacters.Patches
         public static void Postfix(SfxCollectionID sfxCollectionId, ref SfxCollection __result, SfxLibrary __instance)
         {
             Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(sfxCollectionId);
-            if (AssetDatabase.GetCharacter(correspondingCharacter, out CustomCharacter customCharacter))
+            if (CharacterDatabase.GetCharacter(correspondingCharacter, out CustomCharacter customCharacter))
             {
                 __result = customCharacter.Sfx;
             }
@@ -46,7 +46,7 @@ namespace BrcCustomCharacters.Patches
                     if (Enum.TryParse(stringPair.Key, out SfxCollectionID collectionId))
                     {
                         Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionId);
-                        if (AssetDatabase.GetCharacter(correspondingCharacter, out CustomCharacter customCharacter))
+                        if (CharacterDatabase.GetCharacter(correspondingCharacter, out CustomCharacter customCharacter))
                         {
                             __result = customCharacter.Sfx;
                         }

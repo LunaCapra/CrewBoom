@@ -17,7 +17,7 @@ namespace BrcCustomCharacters.Patches
             {
                 foreach (OutfitSwappableCharacter npcCharacter in characters)
                 {
-                    if (AssetDatabase.GetCharacter(npcCharacter.Character, out CustomCharacter character))
+                    if (CharacterDatabase.GetCharacter(npcCharacter.Character, out CustomCharacter character))
                     {
                         foreach (DynamicBone dynamicBone in npcCharacter.GetComponents<DynamicBone>())
                         {
@@ -53,7 +53,7 @@ namespace BrcCustomCharacters.Patches
                     }
                 }
             }
-            else if (AssetDatabase.GetCharacter(___character, out CustomCharacter character))
+            else if (CharacterDatabase.GetCharacter(___character, out CustomCharacter character))
             {
                 GameObject customCharacter = Object.Instantiate(character.Definition.gameObject, __instance.transform).gameObject;
 

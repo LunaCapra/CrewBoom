@@ -76,7 +76,7 @@ namespace BrcCustomCharacters.Patches
 
         private static void SwapOutfitSwappable(OutfitSwappableCharacter swappable)
         {
-            if (!AssetDatabase.GetCharacter(swappable.Character, out CustomCharacter character))
+            if (!CharacterDatabase.GetCharacter(swappable.Character, out CustomCharacter character))
             {
                 return;
             }
@@ -149,7 +149,7 @@ namespace BrcCustomCharacters.Patches
         }
         private static void SwapCutsceneOnlyCharacter(Transform root, Characters character)
         {
-            if (!AssetDatabase.HasCharacter(character))
+            if (!CharacterDatabase.HasCharacter(character))
             {
                 return;
             }

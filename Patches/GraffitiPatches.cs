@@ -16,12 +16,15 @@ namespace BrcCustomCharacters.Patches
             Assets assets = (Assets)__instance.GetField("assets").GetValue(__instance);
             GraffitiArtInfo graffitiArtInfo = assets.LoadAssetFromBundle<GraffitiArtInfo>("graffiti", "graffitiartinfo");
 
+            Shader shader = graffitiArtInfo.graffitiArt[0].graffitiMaterial.shader;
+            CharacterDatabase.SetGraffitiShader(shader);
+
             for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
             {
                 Characters character = (Characters)i;
-                if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+                if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
                 {
-                    if (customCharacter.Definition.Graffiti)
+                    if (customCharacter.Graffiti == null)
                     {
                         GraffitiArt graffiti = graffitiArtInfo.FindByCharacter(character);
 
@@ -49,7 +52,7 @@ namespace BrcCustomCharacters.Patches
             for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
             {
                 Characters character = (Characters)i;
-                if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+                if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
                 {
                     if (customCharacter.Definition.Graffiti)
                     {
@@ -79,7 +82,7 @@ namespace BrcCustomCharacters.Patches
                 for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)
                 {
                     Characters character = (Characters)i;
-                    if (AssetDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+                    if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
                     {
                         if (customCharacter.Definition.Graffiti)
                         {

@@ -7,9 +7,9 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix()
         {
-            if (AssetDatabase.HasCharacterOverride)
+            if (CharacterDatabase.HasCharacterOverride)
             {
-                AssetDatabase.SetCharacterOverrideDone();
+                CharacterDatabase.SetCharacterOverrideDone();
             }
         }
     }

@@ -17,11 +17,11 @@ namespace BrcCustomCharacters
             Logger.LogInfo($"{PluginInfo.PLUGIN_GUID} loaded.");
 
             Logger.LogInfo("Loading configuration...");
-            AssetConfig.Init(Config);
+            CharacterConfig.Init(Config);
             Logger.LogInfo("Configuration loaded.");
 
             Logger.LogInfo("Initializing model replacement database.");
-            AssetDatabase.Initialize(Paths.PluginPath);
+            CharacterDatabase.Initialize(Paths.PluginPath);
             Logger.LogInfo("Database initialized.");
 
             Harmony harmony = new Harmony("io.sgiygas.brcCustomCharacters");

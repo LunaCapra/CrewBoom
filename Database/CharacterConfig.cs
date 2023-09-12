@@ -6,7 +6,7 @@ using System;
 
 namespace BrcCustomCharacters
 {
-    public static class AssetConfig
+    public static class CharacterConfig
     {
         private const string CONFIG_DESCRIPTION = "Enter a GUID of a character bundle to always load for {0} (Blank = Auto-detect, \"OFF\" = Default character for you)";
 
@@ -23,7 +23,7 @@ namespace BrcCustomCharacters
                     continue;
                 }
 
-                BrcNamedCharacter characterName = (BrcNamedCharacter)character;
+                BrcCharacter characterName = (BrcCharacter)character;
                 _characterIdOverrides[(int)character] = config.Bind<string>("Replacement IDs", characterName.ToString(), null, string.Format(CONFIG_DESCRIPTION, characterName)); ;
                 if (_characterIdOverrides[(int)character].Value != string.Empty)
                 {
