@@ -21,7 +21,7 @@ namespace BrcCustomCharacters
         public static bool HasCharacterOverride;
         private static Guid _currentCharacterOverride;
 
-        private static ManualLogSource DebugLog = BepInEx.Logging.Logger.CreateLogSource("BRCCustomCharacters AssetDatabase");
+        private static ManualLogSource DebugLog = BepInEx.Logging.Logger.CreateLogSource("BRCCustomCharacters Database");
 
         public static void Initialize(string pluginPath)
         {
@@ -82,8 +82,6 @@ namespace BrcCustomCharacters
                                 //Create a new custom character instance and store it
                                 CustomCharacter customCharacter = new CustomCharacter(characterDefinition);
                                 _customCharacters.Add(id, customCharacter);
-
-                                DebugLog.LogInfo($"\tID: {id}");
                             }
                             else
                             {

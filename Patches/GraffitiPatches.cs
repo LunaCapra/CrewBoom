@@ -1,5 +1,4 @@
 ﻿using BrcCustomCharacters.Data;
-using BrcCustomCharactersLib;
 using HarmonyLib;
 using Reptile;
 using System.Collections;
@@ -29,7 +28,6 @@ namespace BrcCustomCharacters.Patches
                         GraffitiArt graffiti = graffitiArtInfo.FindByCharacter(character);
 
                         Texture mainTex = customCharacter.Definition.Graffiti.mainTexture;
-                        graffiti.title = customCharacter.Definition.GraffitiName;
                         graffiti.graffitiMaterial.mainTexture = mainTex;
                     }
                 }

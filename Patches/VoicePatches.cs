@@ -3,7 +3,6 @@ using HarmonyLib;
 using System.Collections.Generic;
 using System;
 using BrcCustomCharacters.Data;
-using BepInEx.Logging;
 
 namespace BrcCustomCharacters.Patches
 {
@@ -12,8 +11,6 @@ namespace BrcCustomCharacters.Patches
     {
         public static void Postfix(SfxLibrary __instance)
         {
-            ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("Voice test");
-
             foreach (KeyValuePair<SfxCollectionID, SfxCollection> collectionPair in __instance.sfxCollectionIDDictionary)
             {
                 Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionPair.Key);

@@ -12,10 +12,7 @@ namespace BrcCustomCharacters.Patches
         {
             Material materialAsset = ___assets.LoadAssetFromBundle<Material>("characters", CharUtil.GetOutfitMaterialName(characterToLoad, outfitIndex));
 
-            if (!CharacterDatabase.HasOutfitShader())
-            {
-                CharacterDatabase.SetOutfitShader(materialAsset.shader);
-            }
+            CharacterDatabase.SetOutfitShader(materialAsset.shader);
 
             __instance.InvokeMethod("AddCharacterMaterial", characterToLoad, outfitIndex, materialAsset);
         }
@@ -30,10 +27,7 @@ namespace BrcCustomCharacters.Patches
 
             Material material = characterMaterialRequest.asset as Material;
 
-            if (!CharacterDatabase.HasOutfitShader())
-            {
-                CharacterDatabase.SetOutfitShader(material.shader);
-            }
+            CharacterDatabase.SetOutfitShader(material.shader);
 
             __instance.InvokeMethod("AddCharacterMaterial", characterToLoad, outfitIndex, material);
 

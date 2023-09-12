@@ -44,13 +44,14 @@ namespace BrcCustomCharacters.Data
             Definition = definition;
 
             CreateSfxCollection();
-            CreateGraffiti();
+            //CreateGraffiti();
 
-            ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("BrcCustomCharacters Character");
+            ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource($"BrcCustomCharacters Character");
             if (Sfx != null)
             {
-                log.LogInfo($"Created SfxCollection for \"{Definition.CharacterName}\"");
+                log.LogInfo("\tCreated SfxCollection");
             }
+            log.LogInfo("\tCharacter initialized.");
         }
 
         private void CreateVisual()
