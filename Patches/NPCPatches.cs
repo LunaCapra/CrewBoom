@@ -43,6 +43,15 @@ namespace BrcCustomCharacters.Patches
                             blinkAnimation.mainRenderer = customRenderer;
                             blinkAnimation.characterMesh = customRenderer.sharedMesh;
                         }
+                        MeshCollider collider = originalAnimator.GetComponent<MeshCollider>();
+                        if (collider)
+                        {
+                            MeshCollider newCollider = customCharacter.AddComponent<MeshCollider>();
+                            newCollider.sharedMesh = collider.sharedMesh;
+                            newCollider.sharedMaterial = collider.sharedMaterial;
+                            newCollider.convex = collider.convex;
+                            newCollider.isTrigger = collider.isTrigger;
+                        }
 
                         customCharacter.SetActive(originalAnimator.gameObject.activeSelf);
 
@@ -67,12 +76,11 @@ namespace BrcCustomCharacters.Patches
                 Animator customAnimator = customCharacter.GetComponent<Animator>();
                 customAnimator.runtimeAnimatorController = originalAnimator.runtimeAnimatorController;
 
-                MeshCollider collider = originalAnimator.GetComponent<MeshCollider>();
-
                 customCharacter.transform.SetLocalPositionAndRotation(originalAnimator.transform.localPosition, originalAnimator.transform.localRotation);
 
                 customCharacter.AddComponent<LookAtIKComponent>();
                 customCharacter.AddComponent<DummyAnimationEventRelay>();
+                MeshCollider collider = originalAnimator.GetComponent<MeshCollider>();
                 if (collider)
                 {
                     MeshCollider newCollider = customCharacter.AddComponent<MeshCollider>();
