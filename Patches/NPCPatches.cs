@@ -30,8 +30,7 @@ namespace BrcCustomCharacters.Patches
                         Animator customAnimator = customCharacter.GetComponent<Animator>();
                         customAnimator.runtimeAnimatorController = originalAnimator.runtimeAnimatorController;
 
-                        customCharacter.transform.localPosition = originalAnimator.transform.localPosition;
-                        customCharacter.transform.localRotation = originalAnimator.transform.localRotation;
+                        customCharacter.transform.SetLocalPositionAndRotation(originalAnimator.transform.localPosition, originalAnimator.transform.localRotation);
 
                         SkinnedMeshRenderer customRenderer = customCharacter.GetComponentInChildren<SkinnedMeshRenderer>(true);
                         npcCharacter.SetField("mainRenderer", customRenderer);
@@ -55,14 +54,33 @@ namespace BrcCustomCharacters.Patches
             }
             else if (CharacterDatabase.GetCharacter(___character, out CustomCharacter character))
             {
-                GameObject customCharacter = Object.Instantiate(character.Definition.gameObject, __instance.transform).gameObject;
+                foreach (DynamicBone dynamicBone in __instance.GetComponentsInChildren<DynamicBone>(true))
+                {
+                    dynamicBone.enabled = false;
+                }
 
-                Animator originalAnimator = __instance.transform.GetComponentInChildren<Animator>(true);
+                DummyAnimationEventRelay animatorBase = __instance.GetComponentInChildren<DummyAnimationEventRelay>(true);
+
+                GameObject customCharacter = Object.Instantiate(character.Definition.gameObject, animatorBase.transform.parent).gameObject;
+
+                Animator originalAnimator = animatorBase.GetComponent<Animator>();
                 Animator customAnimator = customCharacter.GetComponent<Animator>();
                 customAnimator.runtimeAnimatorController = originalAnimator.runtimeAnimatorController;
 
-                customCharacter.transform.localPosition = originalAnimator.transform.localPosition;
-                customCharacter.transform.localRotation = originalAnimator.transform.localRotation;
+                MeshCollider collider = originalAnimator.GetComponent<MeshCollider>();
+
+                customCharacter.transform.SetLocalPositionAndRotation(originalAnimator.transform.localPosition, originalAnimator.transform.localRotation);
+
+                customCharacter.AddComponent<LookAtIKComponent>();
+                customCharacter.AddComponent<DummyAnimationEventRelay>();
+                if (collider)
+                {
+                    MeshCollider newCollider = customCharacter.AddComponent<MeshCollider>();
+                    newCollider.sharedMesh = collider.sharedMesh;
+                    newCollider.sharedMaterial = collider.sharedMaterial;
+                    newCollider.convex = collider.convex;
+                    newCollider.isTrigger = collider.isTrigger;
+                }
 
                 customCharacter.SetActive(originalAnimator.gameObject.activeSelf);
 
