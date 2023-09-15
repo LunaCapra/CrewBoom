@@ -42,6 +42,7 @@ namespace BrcCustomCharacters.Patches
             {"FrankBStory", Characters.frank },
             {"FrankCStory", Characters.frank },
             {"FrankDStory", Characters.frank },
+            {"FleshPrinceStory", Characters.prince }
         };
 
         private static readonly string[] PropBones = new string[]

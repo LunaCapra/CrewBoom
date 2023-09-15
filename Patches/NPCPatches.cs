@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using Reptile;
 using HarmonyLib;
-using BepInEx.Logging;
-using BrcCustomCharactersLib;
 using BrcCustomCharacters.Data;
 
 namespace BrcCustomCharacters.Patches
