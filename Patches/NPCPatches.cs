@@ -64,17 +64,6 @@ namespace BrcCustomCharacters.Patches
                 customCharacter.transform.localPosition = originalAnimator.transform.localPosition;
                 customCharacter.transform.localRotation = originalAnimator.transform.localRotation;
 
-                SkinnedMeshRenderer originalRenderer = originalAnimator.GetComponentInChildren<SkinnedMeshRenderer>();
-                if (originalRenderer)
-                {
-                    SkinnedMeshRenderer characterRenderer = customAnimator.GetComponentInChildren<SkinnedMeshRenderer>();
-                    if (characterRenderer != null)
-                    {
-                        //Just copy the material, we already hijacked the material loading functions
-                        characterRenderer.material = originalRenderer.material;
-                    }
-                }
-
                 customCharacter.SetActive(originalAnimator.gameObject.activeSelf);
 
                 //Need to use DestroyImmediate because Destroy won't destroy it in time for the actual function running

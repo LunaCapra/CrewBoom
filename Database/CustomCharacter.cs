@@ -184,7 +184,7 @@ namespace BrcCustomCharacters.Data
                     if (!VOICE_IDS.Contains(container.clipID))
                     {
                         Array.Resize(ref Sfx.audioClipContainers, Sfx.audioClipContainers.Length + 1);
-                        Sfx.audioClipContainers[Sfx.audioClipContainers.Length] = container;
+                        Sfx.audioClipContainers[Sfx.audioClipContainers.Length - 1] = container;
                     }
                 }
             }
