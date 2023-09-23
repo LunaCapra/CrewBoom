@@ -1,5 +1,6 @@
 ﻿using Reptile;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BrcCustomCharacters
 {
@@ -75,6 +76,36 @@ namespace BrcCustomCharacters
                     return "Shine";
                 default:
                     return "Red";
+            }
+        }
+
+        private static readonly string[] PropBones = new string[]
+        {
+            "propl",
+            "propr",
+            "footl",
+            "footr",
+            "handl",
+            "handr",
+            "jetpackPos"
+        };
+
+        public static void ReparentAllProps(Transform originalRoot, Transform targetRoot)
+        {
+            foreach (string bone in PropBones)
+            {
+                Transform original = originalRoot.FindRecursive(bone);
+                Transform target = targetRoot.FindRecursive(bone);
+                ReparentChildren(original, target);
+            }
+        }
+        private static void ReparentChildren(Transform source, Transform target)
+        {
+            Transform[] children = source.GetComponentsInChildren<Transform>();
+            for (int i = 0; i < children.Length; i++)
+            {
+                children[i].SetParent(target, false);
+                children[i].SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             }
         }
     }

@@ -6,12 +6,14 @@ using System;
 using BrcCustomCharactersLib;
 using BepInEx.Logging;
 using BrcCustomCharacters.Data;
+using BepInEx;
+using System.Text;
 
 namespace BrcCustomCharacters
 {
     public static class CharacterDatabase
     {
-        private const string CHAR_ASSET_FOLDER = "brcCustomCharacters/CharAssets";
+        private const string CHAR_ASSET_FOLDER = "BrcCustomCharacters";
         private static string ASSET_PATH;
 
         private static Dictionary<Guid, string> _characterBundlePaths;
@@ -23,9 +25,13 @@ namespace BrcCustomCharacters
 
         private static ManualLogSource DebugLog = BepInEx.Logging.Logger.CreateLogSource("BRCCustomCharacters Database");
 
-        public static void Initialize(string pluginPath)
+        public static void Initialize()
         {
-            ASSET_PATH = Path.Combine(pluginPath, CHAR_ASSET_FOLDER);
+            ASSET_PATH = Path.Combine(Paths.ConfigPath, CHAR_ASSET_FOLDER);
+            if (Directory.Exists(Path.Combine(Paths.PluginPath, "brcCustomCharacters/CharAssets")))
+            {
+                DebugLog.LogWarning($"\nThe \"CharAssets\" directory for character bundles has been moved to the BepInEx config folder!\n\"{ASSET_PATH}\"\nPlease use that folder instead.");
+            }
 
             _characterBundlePaths = new Dictionary<Guid, string>();
             _customCharacters = new Dictionary<Guid, CustomCharacter>();
@@ -50,6 +56,7 @@ namespace BrcCustomCharacters
         {
             if (!Directory.Exists(ASSET_PATH))
             {
+                DebugLog.LogWarning($"Could not find directory \"{ASSET_PATH}\", it will be ");
                 Directory.CreateDirectory(ASSET_PATH);
                 return;
             }
@@ -73,7 +80,11 @@ namespace BrcCustomCharacters
                         }
                         if (characterDefinition != null)
                         {
-                            DebugLog.LogInfo($"Found character replacement \"{characterDefinition.CharacterName}\" over {characterDefinition.CharacterToReplace}");
+                            StringBuilder characterLog = new StringBuilder();
+                            characterLog.Append($"Loading \"{characterDefinition.CharacterName}\"");
+                            characterLog.Append(characterDefinition.IsNewCharacter ? " as new character." : $" (Skin for {characterDefinition.CharacterToReplace})");
+                            DebugLog.LogInfo(characterLog.ToString());
+
                             if (Guid.TryParse(characterDefinition.Id, out Guid id))
                             {
                                 _characterBundlePaths.Add(id, filePath);
@@ -90,7 +101,7 @@ namespace BrcCustomCharacters
                         }
                         else
                         {
-                            DebugLog.LogWarning($"The asset bundle (\"{bundle.name}\") does not have a CharacterDefinition. You may be trying to load a character that was made with an older version of this plugin.");
+                            DebugLog.LogWarning($"The asset bundle at \"{filePath}\" does not have a CharacterDefinition. You may be trying to load a character that was made with an older version of this plugin.");
                         }
 
                         //bundle.Unload(false);

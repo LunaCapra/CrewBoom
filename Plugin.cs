@@ -14,14 +14,14 @@ namespace BrcCustomCharacters
         private void Awake()
         {
             // Plugin startup logic
-            Logger.LogInfo($"{PluginInfo.PLUGIN_GUID} loaded.");
+            Logger.LogInfo($"{PluginInfo.PLUGIN_GUID} v{PluginInfo.PLUGIN_VERSION} loaded.");
 
             Logger.LogInfo("Loading configuration...");
-            CharacterConfig.Init(Config);
+            CharacterConfig.Initialize(Config);
             Logger.LogInfo("Configuration loaded.");
 
             Logger.LogInfo("Initializing model replacement database.");
-            CharacterDatabase.Initialize(Paths.PluginPath);
+            CharacterDatabase.Initialize();
             Logger.LogInfo("Database initialized.");
 
             Harmony harmony = new Harmony("io.sgiygas.brcCustomCharacters");

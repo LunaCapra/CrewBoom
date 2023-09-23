@@ -45,14 +45,6 @@ namespace BrcCustomCharacters.Patches
             {"FleshPrinceStory", Characters.prince }
         };
 
-        private static readonly string[] PropBones = new string[]
-        {
-            "propl",
-            "propr",
-            "footl",
-            "footr"
-        };
-
         public static void Prefix(PlayableDirector ___sequence)
         {
             //Replace main characters
@@ -112,7 +104,7 @@ namespace BrcCustomCharacters.Patches
                 {
                     child.name += "_old";
 
-                    ReparentAllProps(child, customAnimator.transform.Find("root"));
+                    CharUtil.ReparentAllProps(child, customAnimator.transform.Find("root"));
                     continue;
                 }
                 Object.Destroy(child.gameObject);
@@ -159,23 +151,6 @@ namespace BrcCustomCharacters.Patches
             swappable.SetField("character", character);
 
             SwapOutfitSwappable(swappable);
-        }
-        private static void ReparentAllProps(Transform originalRoot, Transform targetRoot)
-        {
-            foreach (string bone in PropBones)
-            {
-                Transform original = originalRoot.FindRecursive(bone);
-                Transform target = targetRoot.FindRecursive(bone);
-                ReparentChildren(original, target);
-            }
-        }
-        private static void ReparentChildren(Transform source, Transform target)
-        {
-            for (int i = 0; i < source.childCount; i++)
-            {
-                Transform child = source.GetChild(i);
-                child.SetParent(target, false);
-            }
         }
     }
 }

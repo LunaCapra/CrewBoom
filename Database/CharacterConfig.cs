@@ -12,7 +12,7 @@ namespace BrcCustomCharacters
 
         private static ConfigEntry<string>[] _characterIdOverrides;
 
-        public static void Init(ConfigFile config)
+        public static void Initialize(ConfigFile config)
         {
             var values = Enum.GetValues(typeof(Characters));
             _characterIdOverrides = new ConfigEntry<string>[values.Length - 2];

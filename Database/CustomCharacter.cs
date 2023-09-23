@@ -6,6 +6,7 @@ using Reptile.Phone;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace BrcCustomCharacters.Data
@@ -45,13 +46,6 @@ namespace BrcCustomCharacters.Data
 
             CreateSfxCollection();
             //CreateGraffiti();
-
-            ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource($"BrcCustomCharacters Character");
-            if (Sfx != null)
-            {
-                log.LogInfo("\tCreated SfxCollection");
-            }
-            log.LogInfo("\tCharacter initialized.");
         }
 
         private void CreateVisual()

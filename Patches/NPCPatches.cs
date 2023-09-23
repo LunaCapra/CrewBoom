@@ -11,22 +11,28 @@ namespace BrcCustomCharacters.Patches
         public static void Prefix(NPC __instance, Characters ___character)
         {
             OutfitSwappableCharacter[] characters = __instance.GetComponentsInChildren<OutfitSwappableCharacter>(true);
-            if (characters.Length > 0)
+            if (characters != null && characters.Length > 0)
             {
                 foreach (OutfitSwappableCharacter npcCharacter in characters)
                 {
-                    if (CharacterDatabase.GetCharacter(npcCharacter.Character, out CustomCharacter character))
+                    if (CharacterDatabase.GetCharacter(npcCharacter.Character, out CustomCharacter swappableCharacter))
                     {
                         foreach (DynamicBone dynamicBone in npcCharacter.GetComponents<DynamicBone>())
                         {
                             dynamicBone.enabled = false;
                         }
 
-                        GameObject customCharacter = Object.Instantiate(character.Definition.gameObject, npcCharacter.transform).gameObject;
+                        GameObject customCharacter = Object.Instantiate(swappableCharacter.Definition.gameObject, npcCharacter.transform).gameObject;
 
                         Animator originalAnimator = npcCharacter.GetComponentInChildren<Animator>(true);
                         Animator customAnimator = customCharacter.GetComponent<Animator>();
                         customAnimator.runtimeAnimatorController = originalAnimator.runtimeAnimatorController;
+
+                        Transform root = originalAnimator.transform.Find("root");
+                        if (root != null)
+                        {
+                            CharUtil.ReparentAllProps(root, customAnimator.transform.Find("root"));
+                        }
 
                         customCharacter.transform.SetLocalPositionAndRotation(originalAnimator.transform.localPosition, originalAnimator.transform.localRotation);
 
@@ -35,7 +41,7 @@ namespace BrcCustomCharacters.Patches
 
                         customCharacter.AddComponent<LookAtIKComponent>();
                         customCharacter.AddComponent<DummyAnimationEventRelay>();
-                        if (character.Definition.CanBlink)
+                        if (swappableCharacter.Definition.CanBlink)
                         {
                             StoryBlinkAnimation blinkAnimation = customCharacter.AddComponent<StoryBlinkAnimation>();
                             blinkAnimation.mainRenderer = customRenderer;
@@ -51,28 +57,45 @@ namespace BrcCustomCharacters.Patches
                             newCollider.isTrigger = collider.isTrigger;
                         }
 
-                        customCharacter.SetActive(originalAnimator.gameObject.activeSelf);
-
                         //Need to use DestroyImmediate because Destroy won't destroy it in time for the actual function running
                         //to not find the destroyed object still
                         Object.DestroyImmediate(originalAnimator.gameObject);
                     }
                 }
             }
-            else if (CharacterDatabase.GetCharacter(___character, out CustomCharacter character))
+            else
             {
+                ReplaceNonSwappableCharacter(__instance, ___character);
+            }
+        }
+
+        private static void ReplaceNonSwappableCharacter(NPC __instance, Characters ___character)
+        {
+            if (CharacterDatabase.GetCharacter(___character, out CustomCharacter character))
+            {
+                DummyAnimationEventRelay animatorBase = __instance.GetComponentInChildren<DummyAnimationEventRelay>(true);
+                if (animatorBase == null)
+                {
+                    return;
+                }
+
                 foreach (DynamicBone dynamicBone in __instance.GetComponentsInChildren<DynamicBone>(true))
                 {
                     dynamicBone.enabled = false;
                 }
 
-                DummyAnimationEventRelay animatorBase = __instance.GetComponentInChildren<DummyAnimationEventRelay>(true);
-
-                GameObject customCharacter = Object.Instantiate(character.Definition.gameObject, animatorBase.transform.parent).gameObject;
-
                 Animator originalAnimator = animatorBase.GetComponent<Animator>();
+
+                GameObject customCharacter = Object.Instantiate(character.Definition.gameObject, originalAnimator.transform.parent).gameObject;
+
                 Animator customAnimator = customCharacter.GetComponent<Animator>();
                 customAnimator.runtimeAnimatorController = originalAnimator.runtimeAnimatorController;
+
+                Transform root = originalAnimator.transform.Find("root");
+                if (root != null)
+                {
+                    CharUtil.ReparentAllProps(root, customAnimator.transform.Find("root"));
+                }
 
                 customCharacter.transform.SetLocalPositionAndRotation(originalAnimator.transform.localPosition, originalAnimator.transform.localRotation);
 
@@ -87,8 +110,6 @@ namespace BrcCustomCharacters.Patches
                     newCollider.convex = collider.convex;
                     newCollider.isTrigger = collider.isTrigger;
                 }
-
-                customCharacter.SetActive(originalAnimator.gameObject.activeSelf);
 
                 //Need to use DestroyImmediate because Destroy won't destroy it in time for the actual function running
                 //to not find the destroyed object still
