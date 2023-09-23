@@ -87,6 +87,8 @@ namespace BrcCustomCharacters
 
                             if (Guid.TryParse(characterDefinition.Id, out Guid id))
                             {
+                                DebugLog.LogInfo($"\tGUID: {id}");
+
                                 _characterBundlePaths.Add(id, filePath);
                                 _characterReplacementIds[(Characters)characterDefinition.CharacterToReplace].Add(id);
 
