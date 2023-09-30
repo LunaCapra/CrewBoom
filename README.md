@@ -1,5 +1,7 @@
-# Bomb Rush Cyberfunk Custom Characters
-
+<p align="center">
+  <img src="https://github.com/SGiygas/CrewBoom/assets/50772474/e079fa47-307a-4b40-a449-f6152a5c11d8" />
+</p>
+    
 This is a repository for a BepInEx plugin to load custom character replacements for the game *Bomb Rush Cyberfunk*  
 
 Example:  
@@ -17,12 +19,12 @@ The plugin allows for the following:
 
 ## Getting started & Downloads
 
-### [Plugin](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v2.2.2/plugin.zip)
-### [Unity project](https://github.com/SGiygas/BrcCustomCharacters/releases/download/v2.2.2/unityProject.zip)
+### [Plugin](https://github.com/SGiygas/CrewBoom/releases/download/v2.2.2/plugin.zip)
+### [Unity project](https://github.com/SGiygas/CrewBoom/releases/download/v2.2.2/unityProject.zip)
 
 To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
 
-### [Documentation available here](https://github.com/SGiygas/BrcCustomCharacters/wiki)
+### [Documentation available here](https://github.com/SGiygas/CrewBoom/wiki)
 
 ## Installation
 
@@ -45,18 +47,18 @@ To install the plugin for BepInEx, follow these steps:
 3. Navigate to the *Settings* tab 
 4. Find the option labeled "Browse profile folder" and click it
 5. Navigate to the folder `BepInEx/plugins/`
-6. Copy the folder `brcCustomCharacters` from the plugin archive to `BepInEx/plugins/`
+6. Copy the folder `CrewBoom` from the plugin archive to `BepInEx/plugins/`
 
 ## Adding characters
 
-1. Navigate to your BepInEx installation for the game and open the `BepInEx/plugins/brcCustomCharacters/` folder
-2. Copy any character bundle file (usually named like `<character name>_<character they replace>`) into the `CharAssets` folder
+1. Navigate to your BepInEx installation for the game and open the `BepInEx/config/CrewBoom/` folder
+2. Copy any character bundle file (usually named like `<character name>_<character they replace>`) into the `CrewBoom` folder
 
 ## Building the plugin
 
 This pertains to if you want to build the plugin yourself, not the Unity project.  
 
-You will need to copy Bomb Rush Cyberfunk's `Assembly-CSharp.dll` into the `libs` folder of the project, as it is not provided.  
+You will need to copy Bomb Rush Cyberfunk's `Assembly-CSharp.dll` into the `Libraries` folder of the project, as it is not provided.  
 It can be found at `<path to where your games are stored>\BombRushCyberfunk\Bomb Rush Cyberfunk_Data\Managed`
 
 ## Authors and acknowledgment
