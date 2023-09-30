@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "dgSpecHash": "q07YkUsFYhnRtrBcyDZV9anEPcvJjJ00HK5gu0+VlvnsrZQ+ZJThMMwJL3+99rwLlmSN+PbrBaBm0MSDNLCQdQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\blues\\Documents\\Modding\\Bomb Rush Cyberfunk\\CrewBoom\\CrewBoom Plugin\\CrewBoom Plugin\\CrewBoom.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\blues\\.nuget\\packages\\bepinex.analyzers\\1.0.8\\bepinex.analyzers.1.0.8.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\bepinex.baselib\\5.4.20\\bepinex.baselib.5.4.20.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\bepinex.core\\5.4.21\\bepinex.core.5.4.21.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\bepinex.plugininfoprops\\1.1.0\\bepinex.plugininfoprops.1.1.0.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\harmonyx\\2.7.0\\harmonyx.2.7.0.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.2\\microsoft.netframework.referenceassemblies.1.0.2.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net46\\1.0.2\\microsoft.netframework.referenceassemblies.net46.1.0.2.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\mono.cecil\\0.11.4\\mono.cecil.0.11.4.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\monomod.runtimedetour\\21.12.13.1\\monomod.runtimedetour.21.12.13.1.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\monomod.utils\\21.12.13.1\\monomod.utils.21.12.13.1.nupkg.sha512",
+    "C:\\Users\\blues\\.nuget\\packages\\unityengine.modules\\2021.3.27\\unityengine.modules.2021.3.27.nupkg.sha512"
+  ],
+  "logs": []
+}
