@@ -23,11 +23,11 @@
 	<Reference Include="Unity.TextMeshPro">
 		<HintPath>Libraries/Unity.TextMeshPro.dll</HintPath>
 	</Reference>
-	<Reference Include="BrcCustomCharactersLib">
-		<HintPath>Libraries/BrcCustomCharactersLib.dll</HintPath>
+	<Reference Include="CrewBoomMonoBehaviours">
+		<HintPath>Libraries/CrewBoomMonoBehaviours.dll</HintPath>
 	</Reference>
-	<Reference Include="BrcCustomCharactersAPI">
-		<HintPath>Libraries/BrcCustomCharactersAPI.dll</HintPath>
+	<Reference Include="CrewBoomAPI">
+		<HintPath>Libraries/CrewBoomAPI.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEngine.UI">
 	  <HintPath>..\..\..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2021.3.27f1\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-8.1.3\ScriptAssemblies\UnityEngine.UI.dll</HintPath>

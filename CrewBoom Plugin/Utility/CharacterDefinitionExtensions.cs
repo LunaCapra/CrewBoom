@@ -1,4 +1,4 @@
-﻿using BrcCustomCharactersLib;
+﻿using CrewBoomMonobehaviours;
 
 namespace CrewBoom.Utility
 {

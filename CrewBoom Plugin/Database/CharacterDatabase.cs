@@ -3,11 +3,12 @@ using Reptile;
 using System.IO;
 using System.Collections.Generic;
 using System;
-using BrcCustomCharactersLib;
+using CrewBoomMonobehaviours;
 using BepInEx.Logging;
 using CrewBoom.Data;
 using BepInEx;
 using System.Text;
+using CrewBoomAPI;
 
 namespace CrewBoom
 {
@@ -165,8 +166,8 @@ namespace CrewBoom
                 }
             }
 
-            BrcCustomCharactersAPI.Database.Initialize(userReplacements);
-            BrcCustomCharactersAPI.Database.OnOverride += SetCharacterOverride;
+            CrewBoomAPIDatabase.Initialize(userReplacements);
+            CrewBoomAPIDatabase.OnOverride += SetCharacterOverride;
         }
         private static void SetCharacterOverride(Guid id)
         {
