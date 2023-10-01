@@ -23,8 +23,8 @@
 	<Reference Include="Unity.TextMeshPro">
 		<HintPath>Libraries/Unity.TextMeshPro.dll</HintPath>
 	</Reference>
-	<Reference Include="CrewBoomMonoBehaviours">
-		<HintPath>Libraries/CrewBoomMonoBehaviours.dll</HintPath>
+	<Reference Include="CrewBoomMono">
+		<HintPath>Libraries/CrewBoomMono.dll</HintPath>
 	</Reference>
 	<Reference Include="CrewBoomAPI">
 		<HintPath>Libraries/CrewBoomAPI.dll</HintPath>

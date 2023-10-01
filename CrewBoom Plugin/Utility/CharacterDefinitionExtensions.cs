@@ -1,4 +1,4 @@
-﻿using CrewBoomMonobehaviours;
+﻿using CrewBoomMono;
 
 namespace CrewBoom.Utility
 {

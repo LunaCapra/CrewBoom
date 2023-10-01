@@ -1,6 +1,6 @@
 ﻿using BepInEx.Configuration;
 using BepInEx.Logging;
-using CrewBoomMonobehaviours;
+using CrewBoomMono;
 using Reptile;
 using System;
 

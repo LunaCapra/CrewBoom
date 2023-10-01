@@ -1,6 +1,6 @@
 ﻿using BepInEx.Logging;
 using CrewBoom.Data;
-using CrewBoomMonobehaviours;
+using CrewBoomMono;
 using HarmonyLib;
 using Reptile;
 using System.Collections.Generic;

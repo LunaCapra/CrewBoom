@@ -30,4 +30,4 @@ C:\Users\blues\Documents\Modding\Bomb Rush Cyberfunk\CrewBoom\CrewBoom Plugin\Cr
 C:\Users\blues\Documents\Modding\Bomb Rush Cyberfunk\CrewBoom\CrewBoom Plugin\CrewBoom Plugin\obj\Debug\net46\CrewBoom.Properties.Resources.resources
 C:\Users\blues\Documents\Modding\Bomb Rush Cyberfunk\CrewBoom\CrewBoom Plugin\CrewBoom Plugin\obj\Debug\net46\CrewBoom.csproj.GenerateResource.cache
 C:\Users\blues\Documents\Modding\Bomb Rush Cyberfunk\CrewBoom\CrewBoom Plugin\CrewBoom Plugin\bin\Debug\net46\CrewBoomAPI.dll
-C:\Users\blues\Documents\Modding\Bomb Rush Cyberfunk\CrewBoom\CrewBoom Plugin\CrewBoom Plugin\bin\Debug\net46\CrewBoomMonoBehaviours.dll
+C:\Users\blues\Documents\Modding\Bomb Rush Cyberfunk\CrewBoom\CrewBoom Plugin\CrewBoom Plugin\bin\Debug\net46\CrewBoomMono.dll

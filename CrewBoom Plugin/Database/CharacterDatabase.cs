@@ -3,7 +3,7 @@ using Reptile;
 using System.IO;
 using System.Collections.Generic;
 using System;
-using CrewBoomMonobehaviours;
+using CrewBoomMono;
 using BepInEx.Logging;
 using CrewBoom.Data;
 using BepInEx;
