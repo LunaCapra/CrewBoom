@@ -2,6 +2,7 @@
 using Reptile;
 using HarmonyLib;
 using CrewBoom.Data;
+using CrewBoomMono;
 
 namespace CrewBoom.Patches
 {
@@ -22,7 +23,7 @@ namespace CrewBoom.Patches
                             dynamicBone.enabled = false;
                         }
 
-                        GameObject customCharacter = Object.Instantiate(swappableCharacter.Definition.gameObject, npcCharacter.transform).gameObject;
+                        CharacterDefinition customCharacter = Object.Instantiate(swappableCharacter.Definition, npcCharacter.transform);
 
                         Animator originalAnimator = npcCharacter.GetComponentInChildren<Animator>(true);
                         Animator customAnimator = customCharacter.GetComponent<Animator>();
@@ -36,21 +37,21 @@ namespace CrewBoom.Patches
 
                         customCharacter.transform.SetLocalPositionAndRotation(originalAnimator.transform.localPosition, originalAnimator.transform.localRotation);
 
-                        SkinnedMeshRenderer customRenderer = customCharacter.GetComponentInChildren<SkinnedMeshRenderer>(true);
+                        SkinnedMeshRenderer customRenderer = customCharacter.Renderers[0];
                         npcCharacter.SetField("mainRenderer", customRenderer);
 
-                        customCharacter.AddComponent<LookAtIKComponent>();
-                        customCharacter.AddComponent<DummyAnimationEventRelay>();
+                        customCharacter.gameObject.AddComponent<LookAtIKComponent>();
+                        customCharacter.gameObject.AddComponent<DummyAnimationEventRelay>();
                         if (swappableCharacter.Definition.CanBlink)
                         {
-                            StoryBlinkAnimation blinkAnimation = customCharacter.AddComponent<StoryBlinkAnimation>();
+                            StoryBlinkAnimation blinkAnimation = customCharacter.gameObject.AddComponent<StoryBlinkAnimation>();
                             blinkAnimation.mainRenderer = customRenderer;
                             blinkAnimation.characterMesh = customRenderer.sharedMesh;
                         }
                         MeshCollider collider = originalAnimator.GetComponent<MeshCollider>();
                         if (collider)
                         {
-                            MeshCollider newCollider = customCharacter.AddComponent<MeshCollider>();
+                            MeshCollider newCollider = customCharacter.gameObject.AddComponent<MeshCollider>();
                             newCollider.sharedMesh = collider.sharedMesh;
                             newCollider.sharedMaterial = collider.sharedMaterial;
                             newCollider.convex = collider.convex;

@@ -1,4 +1,5 @@
-﻿using CrewBoom.Utility;
+﻿using BepInEx.Logging;
+using CrewBoom.Utility;
 using CrewBoomMono;
 using Reptile;
 using Reptile.Phone;
@@ -48,15 +49,19 @@ namespace CrewBoom.Data
         private void CreateVisual()
         {
             GameObject parent = new GameObject($"{Definition.CharacterName} Visuals");
-            GameObject characterModel = UnityEngine.Object.Instantiate(Definition.gameObject);
+            CharacterDefinition characterModel = UnityEngine.Object.Instantiate(Definition);
 
             //InitCharacterModel
             characterModel.transform.SetParent(parent.transform, false);
 
             //InitSkinnedMeshRendererForModel
-            SkinnedMeshRenderer meshRenderer = characterModel.GetComponentInChildren<SkinnedMeshRenderer>();
-            meshRenderer.sharedMaterial = Definition.Outfits[0];
-            meshRenderer.receiveShadows = false;
+            for (int i = 0; i < characterModel.Renderers.Length; i++)
+            {
+                SkinnedMeshRenderer renderer = characterModel.Renderers[i];
+                renderer.sharedMaterials = Definition.Outfits[0].MaterialContainers[i].Materials;
+                renderer.receiveShadows = false;
+                renderer.gameObject.layer = 15;
+            }
 
             //InitAnimatorForModel
             characterModel.GetComponentInChildren<Animator>().applyRootMotion = false;
@@ -182,9 +187,18 @@ namespace CrewBoom.Data
         }
         public void ApplyShaderToOutfits(Shader shader)
         {
-            foreach (Material material in Definition.Outfits)
+            foreach (CharacterOutfit outfit in Definition.Outfits)
             {
-                material.shader = shader;
+                foreach (CharacterOutfitRenderer container in outfit.MaterialContainers)
+                {
+                    for (int i = 0; i < container.Materials.Length; i++)
+                    {
+                        if (container.UseShaderForMaterial[i])
+                        {
+                            container.Materials[i].shader = shader;
+                        }
+                    }
+                }
             }
         }
         public void ApplyShaderToGraffiti(Shader shader)

@@ -18,37 +18,37 @@ namespace CrewBoom.Patches
         }
     }
 
-    [HarmonyPatch(typeof(Reptile.CharacterLoader), nameof(Reptile.CharacterLoader.GetCharacterMaterial))]
-    public class GetMaterialPatch
-    {
-        public static void Postfix(Characters character, int outfitIndex, ref Material __result)
-        {
-            if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
-            {
-                __result = customCharacter.Definition.Outfits[outfitIndex];
-            }
-        }
-    }
+    //[HarmonyPatch(typeof(Reptile.CharacterLoader), nameof(Reptile.CharacterLoader.GetCharacterMaterial))]
+    //public class GetMaterialPatch
+    //{
+    //    public static void Postfix(Characters character, int outfitIndex, ref Material __result)
+    //    {
+    //        if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+    //        {
+    //            __result = customCharacter.Definition.Outfits[outfitIndex];
+    //        }
+    //    }
+    //}
 
-    [HarmonyPatch(typeof(Reptile.CharacterConstructor), nameof(Reptile.CharacterConstructor.GetCharacterMaterials))]
-    public class GetMaterialsPatch
-    {
-        public static void Postfix(Material[,] __result)
-        {
-            for (int i = 0; i < __result.Length; i++)
-            {
-                Characters character = (Characters)i;
-                if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        Material material = customCharacter.Definition.Outfits[j];
-                        __result[i, j] = material;
-                    }
-                }
-            }
-        }
-    }
+    //[HarmonyPatch(typeof(Reptile.CharacterConstructor), nameof(Reptile.CharacterConstructor.GetCharacterMaterials))]
+    //public class GetMaterialsPatch
+    //{
+    //    public static void Postfix(Material[,] __result)
+    //    {
+    //        for (int i = 0; i < __result.Length; i++)
+    //        {
+    //            Characters character = (Characters)i;
+    //            if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+    //            {
+    //                for (int j = 0; j < 4; j++)
+    //                {
+    //                    Material material = customCharacter.Definition.Outfits[j];
+    //                    __result[i, j] = material;
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
     [HarmonyPatch(typeof(Reptile.CharacterVisual), nameof(Reptile.CharacterVisual.Init))]
     public class BlinkPatch

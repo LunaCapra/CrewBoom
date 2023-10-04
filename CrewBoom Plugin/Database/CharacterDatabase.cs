@@ -133,10 +133,7 @@ namespace CrewBoom
 
             foreach (CustomCharacter character in _customCharacters.Values)
             {
-                if (character.Definition.UseReptileShader)
-                {
-                    character.ApplyShaderToOutfits(shader);
-                }
+                character.ApplyShaderToOutfits(shader);
             }
         }
         public static void SetGraffitiShader(Shader shader)

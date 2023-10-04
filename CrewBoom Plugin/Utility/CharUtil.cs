@@ -1,4 +1,6 @@
-﻿using Reptile;
+﻿using CrewBoom.Utility;
+using CrewBoomMono;
+using Reptile;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -107,6 +109,20 @@ namespace CrewBoom
                 children[i].SetParent(target, false);
                 children[i].SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             }
+        }
+
+        public static bool TrySetCustomOutfit(Component source, int outfit, out SkinnedMeshRenderer firstActiveRenderer)
+        {
+            firstActiveRenderer = null;
+
+            CharacterDefinition characterDefinition = source.GetComponentInChildren<CharacterDefinition>(true);
+            if (characterDefinition != null)
+            {
+                characterDefinition.SetOutfit(outfit, out firstActiveRenderer);
+                return true;
+            }
+
+            return false;
         }
     }
 }
