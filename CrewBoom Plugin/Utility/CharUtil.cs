@@ -1,7 +1,6 @@
 ﻿using CrewBoom.Utility;
 using CrewBoomMono;
 using Reptile;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CrewBoom

@@ -1,5 +1,4 @@
-﻿using BepInEx.Logging;
-using CrewBoom.Utility;
+﻿using CrewBoom.Utility;
 using CrewBoomMono;
 using Reptile;
 using Reptile.Phone;
@@ -61,6 +60,7 @@ namespace CrewBoom.Data
                 renderer.sharedMaterials = Definition.Outfits[0].MaterialContainers[i].Materials;
                 renderer.receiveShadows = false;
                 renderer.gameObject.layer = 15;
+                renderer.gameObject.SetActive(Definition.Outfits[0].EnabledRenderers[i]);
             }
 
             //InitAnimatorForModel
