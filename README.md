@@ -20,8 +20,8 @@ The plugin allows for the following:
 
 ## Getting started & Downloads
 
-### [Plugin](https://github.com/SGiygas/CrewBoom/releases/download/v2.4.0/plugin.zip)
-### [Unity project](https://github.com/SGiygas/CrewBoom/releases/download/v2.4.0/unityProject.zip)
+### [Plugin](https://github.com/SGiygas/CrewBoom/releases/download/v2.4.1/plugin.zip)
+### [Unity project](https://github.com/SGiygas/CrewBoom/releases/download/v2.4.1/unityProject.zip)
 
 To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
 
