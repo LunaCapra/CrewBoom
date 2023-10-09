@@ -17,6 +17,7 @@ The plugin allows for the following:
 - Custom character graffiti
 - Custom character voice clips
 - Multiple skins at once (for different characters and per character)
+- Additional character slots for any character bundle
 
 ## Getting started & Downloads
 
