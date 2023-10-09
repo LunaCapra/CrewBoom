@@ -3,6 +3,9 @@ using HarmonyLib;
 using System.Collections.Generic;
 using System;
 using CrewBoom.Data;
+using UnityEngine;
+using UnityEngine.Audio;
+using BepInEx.Logging;
 
 namespace CrewBoom.Patches
 {
@@ -15,6 +18,19 @@ namespace CrewBoom.Patches
             {
                 Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionPair.Key);
                 CharacterDatabase.InitializeMissingSfxCollections(correspondingCharacter, collectionPair.Value);
+            }
+
+            int max = (int)Characters.MAX;
+            for (int i = max + 1; i <= max + CharacterDatabase.NewCharacterCount; i++)
+            {
+                Characters character = (Characters)i;
+                if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+                {
+                    if (customCharacter.SfxID != SfxCollectionID.NONE)
+                    {
+                        __instance.sfxCollectionIDDictionary.Add(customCharacter.SfxID, customCharacter.Sfx);
+                    }
+                }
             }
         }
     }
@@ -32,24 +48,85 @@ namespace CrewBoom.Patches
         }
     }
 
-    public class GetSfxCollectionStringPatch
+    [HarmonyPatch(typeof(Reptile.AudioManager), "GetCharacterVoiceSfxCollection")]
+    public class GetSfxCharacterCollectionPatch
     {
-        public static void Postfix(string sfxCollectionName, ref SfxCollection __result, SfxLibrary __instance)
+        public static bool Prefix(Characters character, ref SfxCollectionID __result)
         {
-            foreach (KeyValuePair<string, SfxCollection> stringPair in __instance.sfxCollectionDictionary)
+            if (character > Characters.MAX)
             {
-                if (!(stringPair.Value == null) && stringPair.Value.collectionName.Equals(sfxCollectionName))
+                if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
                 {
-                    if (Enum.TryParse(stringPair.Key, out SfxCollectionID collectionId))
-                    {
-                        Characters correspondingCharacter = VoiceUtility.CharacterFromVoiceCollection(collectionId);
-                        if (CharacterDatabase.GetCharacter(correspondingCharacter, out CustomCharacter customCharacter))
-                        {
-                            __result = customCharacter.Sfx;
-                        }
-                    }
+                    __result = customCharacter.SfxID;
+                    return false;
                 }
+
+                __result = SfxCollectionID.NONE;
+                return false;
             }
+
+            return true;
+        }
+    }
+    [HarmonyPatch(typeof(Reptile.AudioManager), "PlayVoice")]
+    [HarmonyPatch(new[] { typeof(VoicePriority), typeof(Characters), typeof(AudioClipID), typeof(AudioSource), typeof(VoicePriority) },
+        new ArgumentType[] { ArgumentType.Ref, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Normal })]
+    public class PlayVoicePatch
+    {
+        public static bool Prefix(ref VoicePriority currentPriority,
+                                  Characters character,
+                                  AudioClipID audioClipID,
+                                  AudioSource audioSource,
+                                  VoicePriority playbackPriority,
+                                  AudioManager __instance,
+                                  AudioMixerGroup[] ___mixerGroups)
+        {
+            if (character > Characters.MAX)
+            {
+                if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+                {
+                    if (playbackPriority <= currentPriority && audioSource.isPlaying)
+                    {
+                        return false;
+                    }
+
+                    AudioClip clip = customCharacter.Sfx.GetRandomAudioClipById(audioClipID);
+
+                    __instance.InvokeMethod("PlayNonloopingSfx", audioSource, clip, ___mixerGroups[5], 0.0f);
+                    currentPriority = playbackPriority;
+                }
+                return false;
+            }
+
+            return true;
+        }
+    }
+    [HarmonyPatch(typeof(Reptile.AudioManager), "PlayVoice", typeof(Characters), typeof(AudioClipID))]
+    public class PlayVoiceForCharacterPatch
+    {
+        public static bool Prefix(Characters character,
+                                  AudioClipID audioClipID,
+                                  AudioManager __instance,
+                                  AudioMixerGroup[] ___mixerGroups,
+                                  AudioSource[] ___audioSources,
+                                  ref VoicePriority __result)
+        {
+            __result = VoicePriority.MOVEMENT;
+
+            ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("Voice test");
+            log.LogMessage(character + " sfx play");
+
+            if (character > Characters.MAX)
+            {
+                if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
+                {
+                    AudioClip clip = customCharacter.Sfx.GetRandomAudioClipById(audioClipID);
+                    __instance.InvokeMethod("PlayNonloopingSfx", ___audioSources[5], clip, ___mixerGroups[5], 0.0f);
+                }
+                return false;
+            }
+
+            return true;
         }
     }
 }

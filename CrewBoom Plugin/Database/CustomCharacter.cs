@@ -12,6 +12,7 @@ namespace CrewBoom.Data
     {
         public CharacterDefinition Definition { get; private set; }
         public SfxCollection Sfx { get; private set; }
+        public SfxCollectionID SfxID { get; private set; }
         public GameObject Visual
         {
             get
@@ -37,12 +38,17 @@ namespace CrewBoom.Data
             AudioClipID.VoiceJump
         };
 
-        public CustomCharacter(CharacterDefinition definition)
+        public CustomCharacter(CharacterDefinition definition, SfxCollectionID sfxID, bool replacement)
         {
             Definition = definition;
 
             CreateSfxCollection();
-            //CreateGraffiti();
+            SfxID = sfxID;
+
+            if (!replacement)
+            {
+                CreateGraffiti();
+            }
         }
 
         private void CreateVisual()
@@ -141,9 +147,7 @@ namespace CrewBoom.Data
         }
         private void CreateGraffiti()
         {
-            if (Definition.Graffiti == null ||
-                Definition.GraffitiName == string.Empty ||
-                Definition.GraffitiArtist == string.Empty)
+            if (Definition.Graffiti == null)
             {
                 return;
             }

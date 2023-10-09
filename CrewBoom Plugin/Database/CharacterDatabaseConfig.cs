@@ -5,7 +5,7 @@ using System;
 
 namespace CrewBoom
 {
-    public static class CharacterConfig
+    public static class CharacterDatabaseConfig
     {
         private const string CONFIG_DESCRIPTION = "Enter a GUID of a character bundle to always load for {0} (Blank = Auto-detect, \"OFF\" = Default character for you)";
 
@@ -31,6 +31,11 @@ namespace CrewBoom
         {
             id = Guid.Empty;
             isDisabled = false;
+
+            if (character > Characters.MAX)
+            {
+                return false;
+            }
 
             string guidString = _characterIdOverrides[(int)character].Value;
             if (guidString == string.Empty)

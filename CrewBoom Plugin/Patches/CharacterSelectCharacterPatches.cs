@@ -1,9 +1,5 @@
-﻿
-
-using HarmonyLib;
+﻿using HarmonyLib;
 using Reptile;
-using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 namespace CrewBoom.Patches
 {
@@ -12,8 +8,7 @@ namespace CrewBoom.Patches
     {
         public static void Postfix(CharacterVisual ___visual, Characters setCharacter)
         {
-            int outfit = Core.Instance.SaveManager.CurrentSaveSlot.GetCharacterProgress(setCharacter).outfit;
-            CharUtil.TrySetCustomOutfit(___visual, outfit, out _);
+            CharUtil.TrySetCustomOutfit(___visual, CharUtil.GetSavedCharacterOutfit(setCharacter), out _);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CrewBoom.Utility;
 using CrewBoomMono;
 using Reptile;
+using System;
 using UnityEngine;
 
 namespace CrewBoom
@@ -22,62 +23,6 @@ namespace CrewBoom
         public static string GetOutfitMaterialName(Characters character, int outfitIndex)
         {
             return string.Format(MATERIAL_FORMAT, character.ToString(), outfitIndex.ToString());
-        }
-
-        public static string GetCharacterFromGraffitiTitle(Characters character)
-        {
-            switch (character)
-            {
-                case Characters.girl1:
-                    return "Vinyl";
-                case Characters.frank:
-                case Characters.prince:
-                    return "‘F’ Is For Family";
-                case Characters.ringdude:
-                    return "Coil";
-                case Characters.metalHead:
-                case Characters.legendMetalHead:
-                    return "Red";
-                case Characters.blockGuy:
-                    return "Tryce";
-                case Characters.spaceGirl:
-                    return "Bel";
-                case Characters.angel:
-                    return "Rave";
-                case Characters.eightBall:
-                case Characters.eightBallBoss:
-                    return "8O TUP";
-                case Characters.dummy:
-                    return "Solace";
-                case Characters.dj:
-                case Characters.futureGirl:
-                    return "Eye-con";
-                case Characters.medusa:
-                    return "Elegant E";
-                case Characters.boarder:
-                    return "DT";
-                case Characters.headMan:
-                case Characters.headManNoJetpack:
-                    return "Faux";
-                case Characters.jetpackBossPlayer:
-                    return "Irene";
-                case Characters.legendFace:
-                    return "Felix";
-                case Characters.oldheadPlayer:
-                    return "Boombap";
-                case Characters.robot:
-                    return "Base";
-                case Characters.skate:
-                    return "Jay";
-                case Characters.wideKid:
-                    return "Mesh";
-                case Characters.pufferGirl:
-                    return "Rise";
-                case Characters.bunGirl:
-                    return "Shine";
-                default:
-                    return "Red";
-            }
         }
 
         private static readonly string[] PropBones = new string[]
@@ -122,6 +67,24 @@ namespace CrewBoom
             }
 
             return false;
+        }
+
+        public static int GetSavedCharacterOutfit(Characters character)
+        {
+            int outfit = 0;
+            if (character > Characters.MAX && CharacterDatabase.GetFirstOrConfigCharacterId(character, out Guid guid))
+            {
+                if (CharacterSaveSlots.GetCharacterData(guid, out CharacterProgress data))
+                {
+                    outfit = data.outfit;
+                }
+            }
+            else
+            {
+                outfit = Core.Instance.SaveManager.CurrentSaveSlot.GetCharacterProgress(character).outfit;
+            }
+
+            return outfit;
         }
     }
 }

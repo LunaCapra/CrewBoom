@@ -1,4 +1,5 @@
-﻿using CrewBoom.Data;
+﻿using BepInEx.Logging;
+using CrewBoom.Data;
 using HarmonyLib;
 using Reptile;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace CrewBoom.Patches
                 characterVisual.Init(character, controller, IK, setGroundAngleLimit);
                 characterVisual.gameObject.SetActive(true);
                 __result = characterVisual;
+
                 return false;
             }
 

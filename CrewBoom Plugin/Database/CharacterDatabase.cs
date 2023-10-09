@@ -9,6 +9,7 @@ using CrewBoom.Data;
 using BepInEx;
 using System.Text;
 using CrewBoomAPI;
+using System.Linq;
 
 namespace CrewBoom
 {
@@ -16,9 +17,11 @@ namespace CrewBoom
     {
         private static string ASSET_PATH;
 
+        public static int NewCharacterCount { get; private set; } = 0;
+
         private static Dictionary<Guid, string> _characterBundlePaths;
         private static Dictionary<Guid, CustomCharacter> _customCharacters;
-        private static Dictionary<Characters, List<Guid>> _characterReplacementIds;
+        private static Dictionary<Characters, List<Guid>> _characterIds;
 
         public static bool HasCharacterOverride;
         private static Guid _currentCharacterOverride;
@@ -38,17 +41,17 @@ namespace CrewBoom
 
             _characterBundlePaths = new Dictionary<Guid, string>();
             _customCharacters = new Dictionary<Guid, CustomCharacter>();
-            _characterReplacementIds = new Dictionary<Characters, List<Guid>>();
+            _characterIds = new Dictionary<Characters, List<Guid>>();
 
             var charactersEnum = Enum.GetValues(typeof(Characters));
             foreach (Characters character in charactersEnum)
             {
                 if (character == Characters.NONE || character == Characters.MAX)
                 {
-                    _characterReplacementIds.Add(character, null);
+                    _characterIds.Add(character, null);
                     continue;
                 }
-                _characterReplacementIds.Add(character, new List<Guid>());
+                _characterIds.Add(character, new List<Guid>());
             }
 
             bool foundAnyCharacters = LoadAllCharacterData();
@@ -66,11 +69,20 @@ namespace CrewBoom
         {
             bool foundAtLeastOneCharacter = false;
 
-            foreach (string filePath in Directory.GetFiles(ASSET_PATH))
+            foreach (string filePath in Directory.GetFiles(ASSET_PATH, "*.cbb"))
             {
-                if (File.Exists(filePath))
+                if (File.Exists(filePath) && Path.GetExtension(filePath) == ".cbb")
                 {
-                    AssetBundle bundle = AssetBundle.LoadFromFile(filePath);
+                    AssetBundle bundle = null;
+                    try
+                    {
+                        bundle = AssetBundle.LoadFromFile(filePath);
+                    }
+                    catch (Exception)
+                    {
+                        DebugLog.LogWarning($"File at {filePath} is not a {PluginInfo.PLUGIN_NAME} character bundle, it will not be loaded");
+                    }
+
                     if (bundle != null)
                     {
                         GameObject[] objects = bundle.LoadAllAssets<GameObject>();
@@ -85,35 +97,91 @@ namespace CrewBoom
                         }
                         if (characterDefinition != null)
                         {
+                            string fileName = Path.GetFileName(filePath);
+
+                            BrcCharacter characterToReplace = BrcCharacter.None;
+
+                            string potentialConfigPath = Path.Combine(ASSET_PATH, Path.GetFileNameWithoutExtension(filePath) + ".json");
+                            if (File.Exists(potentialConfigPath))
+                            {
+                                string configData = File.ReadAllText(potentialConfigPath);
+                                try
+                                {
+                                    CharacterConfig config = JsonUtility.FromJson<CharacterConfig>(configData);
+                                    if (Enum.TryParse(config.CharacterToReplace, out BrcCharacter newCharacterReplacement))
+                                    {
+                                        characterToReplace = newCharacterReplacement;
+                                    }
+                                    else
+                                    {
+                                        DebugLog.LogWarning($"The configured replacement character for the bundle {fileName} (\"{config.CharacterToReplace}\") is not a valid character!");
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    DebugLog.LogError($"Failed to read JSON config for \"{fileName}\"");
+                                }
+                            }
+
                             StringBuilder characterLog = new StringBuilder();
                             characterLog.Append($"Loading \"{characterDefinition.CharacterName}\"");
-                            characterLog.Append(characterDefinition.IsNewCharacter ? " as new character." : $" (Skin for {characterDefinition.CharacterToReplace})");
+                            characterLog.Append(characterToReplace == BrcCharacter.None ? " (additional character)" : $" (skin for {characterToReplace})");
+                            characterLog.Append("...");
                             DebugLog.LogMessage(characterLog.ToString());
 
                             if (Guid.TryParse(characterDefinition.Id, out Guid id))
                             {
+                                DebugLog.LogInfo($"GUID: {id}");
+
+                                if (_characterBundlePaths.ContainsKey(id))
+                                {
+                                    DebugLog.LogWarning($"Character's GUID already exists. Make sure to not have duplicate character bundles.");
+                                    continue;
+                                }
+
                                 if (!foundAtLeastOneCharacter)
                                 {
                                     foundAtLeastOneCharacter = true;
                                 }
 
-                                DebugLog.LogInfo($"\tGUID: {id}");
-
                                 _characterBundlePaths.Add(id, filePath);
-                                _characterReplacementIds[(Characters)characterDefinition.CharacterToReplace].Add(id);
+
+                                SfxCollectionID sfxID = SfxCollectionID.NONE;
+                                if (characterToReplace != BrcCharacter.None)
+                                {
+                                    _characterIds[(Characters)characterToReplace].Add(id);
+                                }
+                                else
+                                {
+                                    NewCharacterCount++;
+                                    Characters newCharacter = Characters.MAX + NewCharacterCount;
+                                    sfxID = SfxCollectionID.MAX + NewCharacterCount;
+
+                                    if (_characterIds.ContainsKey(newCharacter))
+                                    {
+                                        _characterIds[newCharacter].Add(id);
+                                    }
+                                    else
+                                    {
+                                        _characterIds.Add(newCharacter, new List<Guid>()
+                                        {
+                                            id
+                                        });
+                                    }
+                                }
 
                                 //Create a new custom character instance and store it
-                                CustomCharacter customCharacter = new CustomCharacter(characterDefinition);
+                                CustomCharacter customCharacter = new CustomCharacter(characterDefinition, sfxID, characterToReplace != BrcCharacter.None);
                                 _customCharacters.Add(id, customCharacter);
                             }
                             else
                             {
-                                DebugLog.LogError($"\tThis character's GUID ({characterDefinition.Id}) is invalid! Make sure their bundle was built correctly.");
+                                DebugLog.LogError($"This character's GUID (\"{characterDefinition.Id}\") is invalid! Make sure their bundle was built correctly.");
                             }
                         }
                         else
                         {
-                            DebugLog.LogWarning($"The asset bundle at \"{filePath}\" does not have a CharacterDefinition. You may be trying to load a character that was made with an older version of this plugin.");
+                            DebugLog.LogWarning($"The asset bundle at \"{filePath}\" does not have a CharacterDefinition. You may be trying to load a character that was made with a different version of this plugin.");
                         }
 
                         //bundle.Unload(false);
@@ -182,7 +250,7 @@ namespace CrewBoom
 
         public static void InitializeMissingSfxCollections(Characters character, SfxCollection collection)
         {
-            if (_characterReplacementIds.TryGetValue(character, out List<Guid> replacements))
+            if (_characterIds.TryGetValue(character, out List<Guid> replacements))
             {
                 if (replacements != null && replacements.Count > 0)
                 {
@@ -278,7 +346,7 @@ namespace CrewBoom
             return false;
         }
 
-        private static bool GetFirstOrConfigCharacterId(Characters character, out Guid guid)
+        public static bool GetFirstOrConfigCharacterId(Characters character, out Guid guid)
         {
             guid = Guid.Empty;
 
@@ -293,7 +361,7 @@ namespace CrewBoom
                 }
             }
 
-            if (!_characterReplacementIds.TryGetValue(character, out List<Guid> replacements) ||
+            if (!_characterIds.TryGetValue(character, out List<Guid> replacements) ||
                 replacements == null ||
                 replacements.Count == 0)
             {
@@ -301,7 +369,7 @@ namespace CrewBoom
             }
 
             //Check if the config has an override ID for this character
-            if (CharacterConfig.GetCharacterOverride(character, out Guid id, out bool isDisabled))
+            if (CharacterDatabaseConfig.GetCharacterOverride(character, out Guid id, out bool isDisabled))
             {
                 if (_characterBundlePaths.ContainsKey(id) && _customCharacters.ContainsKey(id))
                 {
@@ -343,14 +411,46 @@ namespace CrewBoom
 
             return characterObject != null;
         }
+        public static bool GetCharacterWithGraffitiTitle(string title, out CustomCharacter characterObject)
+        {
+            characterObject = null;
+
+            foreach (CustomCharacter character in _customCharacters.Values)
+            {
+                if (character.Graffiti != null)
+                {
+                    if (character.Graffiti.title == title)
+                    {
+                        characterObject = character;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
         public static bool HasCharacter(Characters character)
         {
-            if (!_characterReplacementIds.TryGetValue(character, out List<Guid> replacements))
+            if (!_characterIds.TryGetValue(character, out List<Guid> replacements))
             {
                 return false;
             }
 
             return replacements != null && replacements.Count > 0;
+        }
+        public static bool GetCharacterValueFromGuid(Guid guid, out Characters character)
+        {
+            character = Characters.NONE;
+
+            foreach (KeyValuePair<Characters, List<Guid>> pair in _characterIds)
+            {
+                if (pair.Value != null && pair.Value.Contains(guid))
+                {
+                    character = pair.Key;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

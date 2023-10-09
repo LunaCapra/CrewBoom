@@ -10,7 +10,7 @@ namespace CrewBoom
         {
             Logger.LogMessage($"{PluginInfo.PLUGIN_GUID} v{PluginInfo.PLUGIN_VERSION} starting...");
 
-            CharacterConfig.Initialize(Config);
+            CharacterDatabaseConfig.Initialize(Config);
 
             if (CharacterDatabase.Initialize())
             {
