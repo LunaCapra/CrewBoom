@@ -147,20 +147,26 @@ namespace CrewBoom.Data
         }
         private void CreateGraffiti()
         {
-            if (Definition.Graffiti == null)
+            Material graffitiMaterial = Definition.Graffiti;
+            string graffitiName = Definition.GraffitiName;
+            string graffitiArtist = Definition.GraffitiArtist;
+            if (graffitiMaterial == null)
             {
-                return;
+                graffitiMaterial = new Material(Shader.Find("Standard"));
+                graffitiMaterial.mainTexture = TextureUtil.GetTextureFromBitmap(Properties.Resources.default_graffiti);
+                graffitiName = "Crew BOOM";
+                graffitiArtist = "SGiygas";
             }
 
             GraffitiArt graffiti = new GraffitiArt();
             graffiti.graffitiSize = GraffitiSize.S;
-            graffiti.graffitiMaterial = Definition.Graffiti;
-            graffiti.title = Definition.GraffitiName;
-            graffiti.artistName = Definition.GraffitiArtist;
+            graffiti.graffitiMaterial = graffitiMaterial;
+            graffiti.title = graffitiName;
+            graffiti.artistName = graffitiArtist;
 
             GraffitiAppEntry appEntry = ScriptableObject.CreateInstance<GraffitiAppEntry>();
             appEntry.Size = GraffitiSize.S;
-            appEntry.GraffitiTexture = Definition.Graffiti.mainTexture;
+            appEntry.GraffitiTexture = graffitiMaterial.mainTexture;
             appEntry.Title = Definition.GraffitiName;
             appEntry.Artist = Definition.GraffitiArtist;
 

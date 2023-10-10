@@ -63,6 +63,16 @@ namespace CrewBoom.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap default_graffiti {
+            get {
+                object obj = ResourceManager.GetObject("default_graffiti", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap logo_background {
             get {
                 object obj = ResourceManager.GetObject("logo_background", resourceCulture);

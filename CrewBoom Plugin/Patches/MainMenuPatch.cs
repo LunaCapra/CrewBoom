@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using CrewBoom.Utility;
+using HarmonyLib;
 using Reptile;
 using System.Drawing;
 using UnityEngine;
@@ -10,12 +11,7 @@ namespace CrewBoom.Patches
     {
         public static void Postfix(MainMenuManager __instance)
         {
-            ImageConverter converter = new ImageConverter();
-            byte[] imageData = (byte[])converter.ConvertTo(Properties.Resources.logo_background, typeof(byte[]));
-
-            Texture2D texture = new Texture2D(512, 512);
-            texture.LoadImage(imageData);
-            texture.Apply();
+            Texture2D texture = TextureUtil.GetTextureFromBitmap(Properties.Resources.logo_background);
 
             GameObject logo = new GameObject("CrewBoom Logo");
             logo.transform.SetParent(__instance.transform, false);
