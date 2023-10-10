@@ -30,7 +30,7 @@ public static class LoadUtil
     public static void InvokeMethod(this object instance, string name, Type[] types, params object[] parameters)
     {
         Traverse traverse = Traverse.Create(instance);
-        traverse = traverse.Method(name, types, parameters);
+        traverse = traverse.Method(name, types);
         traverse.GetValue(parameters);
     }
 

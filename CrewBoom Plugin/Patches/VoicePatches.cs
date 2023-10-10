@@ -92,7 +92,9 @@ namespace CrewBoom.Patches
 
                     AudioClip clip = customCharacter.Sfx.GetRandomAudioClipById(audioClipID);
 
-                    __instance.InvokeMethod("PlayNonloopingSfx", audioSource, clip, ___mixerGroups[5], 0.0f);
+                    __instance.InvokeMethod("PlayNonloopingSfx",
+                        new Type[] { typeof(AudioSource), typeof(AudioClip), typeof(AudioMixerGroup), typeof(float) },
+                        audioSource, clip, ___mixerGroups[5], 0.0f);
                     currentPriority = playbackPriority;
                 }
                 return false;
@@ -121,7 +123,9 @@ namespace CrewBoom.Patches
                 if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
                 {
                     AudioClip clip = customCharacter.Sfx.GetRandomAudioClipById(audioClipID);
-                    __instance.InvokeMethod("PlayNonloopingSfx", ___audioSources[5], clip, ___mixerGroups[5], 0.0f);
+                    __instance.InvokeMethod("PlayNonloopingSfx",
+                        new Type[] { typeof(AudioSource), typeof(AudioClip), typeof(AudioMixerGroup), typeof(float) },
+                        ___audioSources[5], clip, ___mixerGroups[5], 0.0f);
                 }
                 return false;
             }

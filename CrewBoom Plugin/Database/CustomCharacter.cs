@@ -79,11 +79,6 @@ namespace CrewBoom.Data
         }
         private void CreateSfxCollection()
         {
-            if (!Definition.HasVoices())
-            {
-                return;
-            }
-
             SfxCollection newCollection = ScriptableObject.CreateInstance<SfxCollection>();
             newCollection.audioClipContainers = new SfxCollection.RandomAudioClipContainer[VOICE_IDS.Count];
             for (int i = 0; i < VOICE_IDS.Count; i++)
@@ -92,6 +87,12 @@ namespace CrewBoom.Data
                 newCollection.audioClipContainers[i].clipID = VOICE_IDS[i];
                 newCollection.audioClipContainers[i].clips = null;
                 newCollection.audioClipContainers[i].lastRandomClip = 0;
+            }
+
+            if (!Definition.HasVoices())
+            {
+                Sfx = newCollection;
+                return;
             }
 
             foreach (SfxCollection.RandomAudioClipContainer originalContainer in newCollection.audioClipContainers)
