@@ -1,18 +1,28 @@
-﻿using BepInEx.Logging;
-using CrewBoom.Data;
+﻿using CrewBoom.Data;
 using HarmonyLib;
 using Reptile;
 using System;
-using System.Reflection;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.TextCore.Text;
 
 namespace CrewBoom.Patches
 {
     [HarmonyPatch(typeof(Reptile.Player), nameof(Reptile.Player.Init))]
     public class PlayerInitOverridePatch
     {
+        public static void Prefix(ref Characters setCharacter)
+        {
+            if (CharacterDatabase.HasCharacterOverride)
+            {
+                if (CharacterDatabase.GetCharacterValueFromGuid(CharacterDatabase.CharacterOverride, out Characters character))
+                {
+                    if (character > Characters.MAX)
+                    {
+                        setCharacter = character;
+                    }
+                }
+            }
+        }
+
         public static void Postfix()
         {
             if (CharacterDatabase.HasCharacterOverride)
@@ -21,6 +31,7 @@ namespace CrewBoom.Patches
             }
         }
     }
+
     [HarmonyPatch(typeof(Reptile.Player), nameof(Reptile.Player.SetOutfit))]
     public class PlayerSetOutfitPatch
     {

@@ -10,9 +10,6 @@ namespace CrewBoom.Patches
     {
         public static void Prefix(ref Characters c)
         {
-            ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("fEAOFIOHAWEIOAWIROAIORAHWRIOJWA");
-            log.LogMessage(c);
-
             if (CharacterDatabase.GetCharacter(c, out CustomCharacter customCharacter))
             {
                 c = (Characters)customCharacter.Definition.FreestyleAnimation;

@@ -23,8 +23,8 @@ namespace CrewBoom
         private static Dictionary<Guid, CustomCharacter> _customCharacters;
         private static Dictionary<Characters, List<Guid>> _characterIds;
 
-        public static bool HasCharacterOverride;
-        private static Guid _currentCharacterOverride;
+        public static bool HasCharacterOverride { get; private set; }
+        public static Guid CharacterOverride { get; private set; }
 
         private static ManualLogSource DebugLog = BepInEx.Logging.Logger.CreateLogSource($"{PluginInfo.PLUGIN_NAME} Database");
 
@@ -219,25 +219,24 @@ namespace CrewBoom
 
         private static void InitializeAPI()
         {
-            Dictionary<int, Guid> userReplacements = new Dictionary<int, Guid>();
+            Dictionary<int, Guid> userCharacters = new Dictionary<int, Guid>();
 
-            var values = Enum.GetValues(typeof(Characters));
-            for (int i = 0; i < values.Length; i++)
+            int max = (int)Characters.MAX;
+            for (int i = max + 1; i <= max + NewCharacterCount; i++)
             {
-                Characters character = (Characters)values.GetValue(i);
-                if (GetFirstOrConfigCharacterId(character, out Guid id))
+                if (GetFirstOrConfigCharacterId((Characters)i, out Guid id))
                 {
-                    userReplacements.Add(i, id);
+                    userCharacters.Add(i, id);
                 }
             }
 
-            CrewBoomAPIDatabase.Initialize(userReplacements);
+            CrewBoomAPIDatabase.Initialize(userCharacters);
             CrewBoomAPIDatabase.OnOverride += SetCharacterOverride;
         }
         private static void SetCharacterOverride(Guid id)
         {
             HasCharacterOverride = true;
-            _currentCharacterOverride = id;
+            CharacterOverride = id;
 
             DebugLog.LogInfo($"Received override for next character {id}");
         }
@@ -352,11 +351,11 @@ namespace CrewBoom
 
             if (HasCharacterOverride)
             {
-                DebugLog.LogInfo($"Getting skin override for {character} with ID {_currentCharacterOverride}");
-                if (_characterBundlePaths.ContainsKey(_currentCharacterOverride) && _customCharacters.ContainsKey(_currentCharacterOverride))
+                DebugLog.LogInfo($"Getting override for {character} with ID {CharacterOverride}");
+                if (_characterBundlePaths.ContainsKey(CharacterOverride) && _customCharacters.ContainsKey(CharacterOverride))
                 {
                     DebugLog.LogInfo("Override was found locally.");
-                    guid = _currentCharacterOverride;
+                    guid = CharacterOverride;
                     return true;
                 }
             }
