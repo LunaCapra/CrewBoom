@@ -90,7 +90,11 @@ namespace CrewBoom.Patches
                         return false;
                     }
 
-                    AudioClip clip = customCharacter.Sfx.GetRandomAudioClipById(audioClipID);
+                    AudioClip clip = null;
+                    if (customCharacter.Sfx != null)
+                    {
+                        clip = customCharacter.Sfx.GetRandomAudioClipById(audioClipID);
+                    }
 
                     __instance.InvokeMethod("PlayNonloopingSfx",
                         new Type[] { typeof(AudioSource), typeof(AudioClip), typeof(AudioMixerGroup), typeof(float) },
@@ -122,7 +126,12 @@ namespace CrewBoom.Patches
             {
                 if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
                 {
-                    AudioClip clip = customCharacter.Sfx.GetRandomAudioClipById(audioClipID);
+                    AudioClip clip = null;
+                    if (customCharacter.Sfx != null)
+                    {
+                        clip = customCharacter.Sfx.GetRandomAudioClipById(audioClipID);
+                    }
+
                     __instance.InvokeMethod("PlayNonloopingSfx",
                         new Type[] { typeof(AudioSource), typeof(AudioClip), typeof(AudioMixerGroup), typeof(float) },
                         ___audioSources[5], clip, ___mixerGroups[5], 0.0f);
