@@ -54,7 +54,7 @@ To install the plugin for BepInEx, follow these steps:
 ## Adding characters
 
 1. Navigate to your BepInEx installation for the game and open the `BepInEx/config/CrewBoom/` folder
-2. Copy any character bundle file (usually named like `<character name>_<character they replace>`) into the `CrewBoom` folder
+2. Copy any character bundle files (.cbb and .json) into the `CrewBoom` folder
 
 ## Building the plugin
 
