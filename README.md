@@ -44,9 +44,8 @@ To install BepInEx, follow these steps:
 
 To install the plugin for BepInEx, follow these steps:
 
-**Automatic Install**
+**Automatic Install**  
 Crew Boom is also available on the [Thunderstore](https://thunderstore.io/c/bomb-rush-cyberfunk/p/SoftGoat/CrewBoom/) to download directly from r2modman.  
-You can also click [here](ror2mm://v1/install/thunderstore.io/SoftGoat/CrewBoom/3.1.2/)
 
 **Manual Install**
 1. Download the [plugin]()
