@@ -5,23 +5,22 @@ using System;
 
 namespace CrewBoom.Patches
 {
-    [HarmonyPatch(typeof(Reptile.StageManager), "SetupWorldHandler")]
+    [HarmonyPatch(typeof(Reptile.StageManager), "GetPlayerCharacter")]
     public class SetupPatch
     {
-        public static void Postfix(WorldHandler ___worldHandler)
+        public static bool Prefix(ref Characters __result)
         {
-            Player player = ___worldHandler.GetFieldValue<SceneObjectsRegister>("sceneObjectsRegister").players[0];
             Guid lastPlayedCharacter = CharacterSaveSlots.CurrentSaveSlot.LastPlayedCharacter;
             if (lastPlayedCharacter != Guid.Empty)
             {
                 if (CharacterDatabase.GetCharacterValueFromGuid(lastPlayedCharacter, out Characters character))
                 {
-                    if (CharacterSaveSlots.GetCharacterData(lastPlayedCharacter, out CharacterProgress data))
-                    {
-                        ___worldHandler.InitPlayerObject(player, character, data.outfit, data.moveStyle);
-                    }
+                    __result = character;
+                    return false;
                 }
             }
+
+            return true;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using CrewBoom.Data;
+﻿using BepInEx.Logging;
+using CrewBoom.Data;
 using HarmonyLib;
 using Reptile;
 using System;
@@ -91,20 +92,33 @@ namespace CrewBoom.Patches
     [HarmonyPatch(typeof(Reptile.Player), "SaveSelectedCharacter")]
     public class PlayerSaveCharacterPatch
     {
-        public static bool Prefix(ref Characters selectedCharacter)
+        public static bool Prefix(Player __instance, ref Characters selectedCharacter)
         {
-            if (selectedCharacter > Characters.MAX)
+            bool runOriginal = true;
+
+            bool isAI = (bool)__instance.GetField("isAI").GetValue(__instance);
+            bool isNew = selectedCharacter > Characters.MAX;
+            if (!isAI)
             {
-                if (CharacterDatabase.GetFirstOrConfigCharacterId(selectedCharacter, out Guid guid))
+                CharacterSaveSlots.CurrentSaveSlot.LastPlayedCharacter = Guid.Empty;
+
+                if (isNew)
                 {
-                    CharacterSaveSlots.CurrentSaveSlot.LastPlayedCharacter = guid;
-                    CharacterSaveSlots.SaveSlot();
+                    if (CharacterDatabase.GetFirstOrConfigCharacterId(selectedCharacter, out Guid guid))
+                    {
+                        CharacterSaveSlots.CurrentSaveSlot.LastPlayedCharacter = guid;
+                    }
+                    runOriginal = false;
                 }
 
-                return false;
+                CharacterSaveSlots.SaveSlot();
+            }
+            else if (selectedCharacter > Characters.MAX)
+            {
+                runOriginal = false;
             }
 
-            return true;
+            return runOriginal;
         }
     }
 
