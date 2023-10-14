@@ -26,7 +26,7 @@ The plugin allows for the following:
 
 To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
 
-### [Documentation available here](https://github.com/SGiygas/CrewBoom/wiki)
+### [Documentation & Help here](https://github.com/SGiygas/CrewBoom/wiki)
 
 ## Installation
 
