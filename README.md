@@ -19,7 +19,7 @@ The plugin allows for the following:
 - Multiple skins at once (for different characters and per character)
 - Additional character slots for any character bundle
 
-## Getting started & Downloads
+## Downloads, instructions and help
 
 ### [Plugin](https://github.com/SGiygas/CrewBoom/releases/download/v3.1.4/plugin.zip)
 ### [Unity project](https://github.com/SGiygas/CrewBoom/releases/download/v3.1.4/unityProject.zip)
@@ -27,6 +27,7 @@ The plugin allows for the following:
 To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
 
 ### [Documentation & Help here](https://github.com/SGiygas/CrewBoom/wiki)
+### [Troubleshooting](https://github.com/SGiygas/CrewBoom/wiki/Troubleshooting)
 
 ## Installation
 
