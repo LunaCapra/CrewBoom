@@ -12,8 +12,9 @@ Example:
 The plugin allows for the following:
 - Custom character name/title
 - Custom character model (gameplay & cutscenes)
-- Custom outfits (up to four)
-- Multiple meshes and renderers per outfit
+- Custom outfits (up to four)+
+- Custom outfit names
+- Multiple meshes and materials per outfit
 - Custom character graffiti
 - Custom character voice clips
 - Multiple skins at once (for different characters and per character)
