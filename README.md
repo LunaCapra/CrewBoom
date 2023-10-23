@@ -2,7 +2,7 @@
   <img src="https://github.com/SGiygas/CrewBoom/assets/50772474/e079fa47-307a-4b40-a449-f6152a5c11d8" />
 </p>
     
-This is a repository for a BepInEx plugin to load custom character replacements for the game *Bomb Rush Cyberfunk*  
+This is a repository for a BepInEx plugin to load custom characters for the game *Bomb Rush Cyberfunk*  
 
 Example:  
 ![image](https://github.com/SGiygas/BrcCustomCharacters/assets/50772474/43ff8ca8-0805-4409-9547-234e26fcedda)
