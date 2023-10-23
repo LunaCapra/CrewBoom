@@ -62,6 +62,9 @@ Crew Boom is also available on the [Thunderstore](https://thunderstore.io/c/bomb
 1. Navigate to your BepInEx installation for the game and open the `BepInEx/config/CrewBoom/` folder
 2. Copy any character bundle files (.cbb and .json) into the `CrewBoom` folder
 
+Optionally, you can edit/create a json file for your character to change whether they replace a character or not.  
+You can find instructions on how to do this [here](https://github.com/SGiygas/CrewBoom/wiki/Character-Configuration#editing-the-json-file)
+
 ## Building the plugin
 
 This pertains to if you want to build the plugin yourself, not the Unity project.  
