@@ -42,7 +42,10 @@ namespace CrewBoom
             {
                 Transform original = originalRoot.FindRecursive(bone);
                 Transform target = targetRoot.FindRecursive(bone);
-                ReparentChildren(original, target);
+                if (original && target)
+                {
+                    ReparentChildren(original, target);
+                }
             }
         }
         private static void ReparentChildren(Transform source, Transform target)
@@ -50,6 +53,10 @@ namespace CrewBoom
             Transform[] children = source.GetComponentsInChildren<Transform>();
             for (int i = 0; i < children.Length; i++)
             {
+                if (children[i] == null)
+                {
+                    continue;
+                }
                 children[i].SetParent(target, false);
                 children[i].SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
             }
