@@ -2,7 +2,7 @@
   <img src="https://github.com/SGiygas/CrewBoom/assets/50772474/e079fa47-307a-4b40-a449-f6152a5c11d8" />
 </p>
     
-This is a repository for a BepInEx plugin to load custom character replacements for the game *Bomb Rush Cyberfunk*  
+This is a repository for a BepInEx plugin to load custom characters for the game *Bomb Rush Cyberfunk*  
 
 Example:  
 ![image](https://github.com/SGiygas/BrcCustomCharacters/assets/50772474/43ff8ca8-0805-4409-9547-234e26fcedda)
@@ -13,20 +13,22 @@ The plugin allows for the following:
 - Custom character name/title
 - Custom character model (gameplay & cutscenes)
 - Custom outfits (up to four)
-- Multiple meshes and renderers per outfit
+- Custom outfit names
+- Multiple meshes and materials per outfit
 - Custom character graffiti
 - Custom character voice clips
 - Multiple skins at once (for different characters and per character)
 - Additional character slots for any character bundle
 
-## Getting started & Downloads
+## Downloads, instructions and help
 
 ### [Plugin](https://github.com/SGiygas/CrewBoom/releases/download/v3.1.4/plugin.zip)
 ### [Unity project](https://github.com/SGiygas/CrewBoom/releases/download/v3.1.4/unityProject.zip)
 
 To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
 
-### [Documentation available here](https://github.com/SGiygas/CrewBoom/wiki)
+### [Documentation & Help here](https://github.com/SGiygas/CrewBoom/wiki)
+### [Troubleshooting](https://github.com/SGiygas/CrewBoom/wiki/Troubleshooting)
 
 ## Installation
 
@@ -59,6 +61,9 @@ Crew Boom is also available on the [Thunderstore](https://thunderstore.io/c/bomb
 
 1. Navigate to your BepInEx installation for the game and open the `BepInEx/config/CrewBoom/` folder
 2. Copy any character bundle files (.cbb and .json) into the `CrewBoom` folder
+
+Optionally, you can edit/create a json file for your character to change whether they replace a character or not.  
+You can find instructions on how to do this [here](https://github.com/SGiygas/CrewBoom/wiki/Character-Configuration#editing-the-json-file)
 
 ## Building the plugin
 
