@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace CrewBoom.Patches
 {
-    [HarmonyPatch(typeof(Reptile.Player), nameof(Reptile.Player.Init))]
+    [HarmonyPatch(typeof(Reptile.Player), nameof(Reptile.Player.SetCharacter))]
     public class PlayerInitOverridePatch
     {
-        public static void Prefix(ref Characters setCharacter)
+        public static void Prefix(ref Characters setChar)
         {
             if (CharacterDatabase.HasCharacterOverride)
             {
@@ -18,7 +18,7 @@ namespace CrewBoom.Patches
                 {
                     if (character > Characters.MAX)
                     {
-                        setCharacter = character;
+                        setChar = character;
                     }
                 }
             }

@@ -34,7 +34,7 @@ namespace CrewBoom
 
             if (!Directory.Exists(ASSET_PATH))
             {
-                DebugLog.LogWarning($"Could not find character bundle directory \"{ASSET_PATH}\".");
+                DebugLog.LogWarning($"Could not find character bundle directory \"{ASSET_PATH}\".\nIt was created instead.");
                 Directory.CreateDirectory(ASSET_PATH);
                 return false;
             }
@@ -57,6 +57,7 @@ namespace CrewBoom
             bool foundAnyCharacters = LoadAllCharacterData();
             if (!foundAnyCharacters)
             {
+                DebugLog.LogWarning($"There were no valid characters found in {ASSET_PATH}.\nMake sure your character bundles (.cbb) are in the CONFIG folder, NOT the PLUGIN folder.");
                 return false;
             }
 

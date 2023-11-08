@@ -19,10 +19,6 @@ namespace CrewBoom
 
                 Logger.LogMessage($"Loaded all available characters!");
             }
-            else
-            {
-                Logger.LogWarning($"No characters were found, plugin disabled.");
-            }
         }
     }
 }

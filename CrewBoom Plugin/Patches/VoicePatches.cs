@@ -119,9 +119,6 @@ namespace CrewBoom.Patches
         {
             __result = VoicePriority.MOVEMENT;
 
-            ManualLogSource log = BepInEx.Logging.Logger.CreateLogSource("Voice test");
-            log.LogMessage(character + " sfx play");
-
             if (character > Characters.MAX)
             {
                 if (CharacterDatabase.GetCharacter(character, out CustomCharacter customCharacter))
