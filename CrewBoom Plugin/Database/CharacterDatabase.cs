@@ -10,17 +10,20 @@ using BepInEx;
 using System.Text;
 using CrewBoomAPI;
 using System.Linq;
+using UnityEngine.TextCore.Text;
 
 namespace CrewBoom
 {
     public static class CharacterDatabase
     {
-        private static string ASSET_PATH;
+        private static readonly string ASSET_PATH = Path.Combine(Paths.ConfigPath, PluginInfo.PLUGIN_NAME);
+        private static readonly string NO_CYPHER_PATH = Path.Combine(ASSET_PATH, "no_cypher");
 
         public static int NewCharacterCount { get; private set; } = 0;
 
         private static Dictionary<Guid, string> _characterBundlePaths;
         private static Dictionary<Guid, CustomCharacter> _customCharacters;
+        private static Dictionary<Guid, bool> _cypherMapping;
         private static Dictionary<Characters, List<Guid>> _characterIds;
 
         public static bool HasCharacterOverride { get; private set; }
@@ -30,8 +33,6 @@ namespace CrewBoom
 
         public static bool Initialize()
         {
-            ASSET_PATH = Path.Combine(Paths.ConfigPath, PluginInfo.PLUGIN_NAME);
-
             if (!Directory.Exists(ASSET_PATH))
             {
                 DebugLog.LogWarning($"Could not find character bundle directory \"{ASSET_PATH}\".\nIt was created instead.");
@@ -39,8 +40,15 @@ namespace CrewBoom
                 return false;
             }
 
+            if (!Directory.Exists(NO_CYPHER_PATH))
+            {
+                DebugLog.LogMessage("No cypher bundle path was not found. It was created instead.");
+                Directory.CreateDirectory(NO_CYPHER_PATH);
+            }
+
             _characterBundlePaths = new Dictionary<Guid, string>();
             _customCharacters = new Dictionary<Guid, CustomCharacter>();
+            _cypherMapping = new Dictionary<Guid, bool>();
             _characterIds = new Dictionary<Characters, List<Guid>>();
 
             var charactersEnum = Enum.GetValues(typeof(Characters));
@@ -72,125 +80,151 @@ namespace CrewBoom
 
             foreach (string filePath in Directory.GetFiles(ASSET_PATH, "*.cbb"))
             {
-                if (File.Exists(filePath) && Path.GetExtension(filePath) == ".cbb")
+                if (LoadCharacterBundle(filePath, true))
                 {
-                    AssetBundle bundle = null;
-                    try
-                    {
-                        bundle = AssetBundle.LoadFromFile(filePath);
-                    }
-                    catch (Exception)
-                    {
-                        DebugLog.LogWarning($"File at {filePath} is not a {PluginInfo.PLUGIN_NAME} character bundle, it will not be loaded");
-                    }
-
-                    if (bundle != null)
-                    {
-                        GameObject[] objects = bundle.LoadAllAssets<GameObject>();
-                        CharacterDefinition characterDefinition = null;
-                        foreach (GameObject obj in objects)
-                        {
-                            characterDefinition = obj.GetComponent<CharacterDefinition>();
-                            if (characterDefinition != null)
-                            {
-                                break;
-                            }
-                        }
-                        if (characterDefinition != null)
-                        {
-                            string fileName = Path.GetFileName(filePath);
-
-                            BrcCharacter characterToReplace = BrcCharacter.None;
-
-                            string potentialConfigPath = Path.Combine(ASSET_PATH, Path.GetFileNameWithoutExtension(filePath) + ".json");
-                            if (File.Exists(potentialConfigPath))
-                            {
-                                string configData = File.ReadAllText(potentialConfigPath);
-                                try
-                                {
-                                    CharacterConfig config = JsonUtility.FromJson<CharacterConfig>(configData);
-                                    if (Enum.TryParse(config.CharacterToReplace, out BrcCharacter newCharacterReplacement))
-                                    {
-                                        characterToReplace = newCharacterReplacement;
-                                    }
-                                    else
-                                    {
-                                        DebugLog.LogWarning($"The configured replacement character for the bundle {fileName} (\"{config.CharacterToReplace}\") is not a valid character!");
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                    DebugLog.LogError($"Failed to read JSON config for \"{fileName}\"");
-                                }
-                            }
-
-                            StringBuilder characterLog = new StringBuilder();
-                            characterLog.Append($"Loading \"{characterDefinition.CharacterName}\"");
-                            characterLog.Append(characterToReplace == BrcCharacter.None ? " (additional character)" : $" (skin for {characterToReplace})");
-                            characterLog.Append("...");
-                            DebugLog.LogMessage(characterLog.ToString());
-
-                            if (Guid.TryParse(characterDefinition.Id, out Guid id))
-                            {
-                                DebugLog.LogInfo($"GUID: {id}");
-
-                                if (_characterBundlePaths.ContainsKey(id))
-                                {
-                                    DebugLog.LogWarning($"Character's GUID already exists. Make sure to not have duplicate character bundles.");
-                                    continue;
-                                }
-
-                                if (!foundAtLeastOneCharacter)
-                                {
-                                    foundAtLeastOneCharacter = true;
-                                }
-
-                                _characterBundlePaths.Add(id, filePath);
-
-                                SfxCollectionID sfxID = SfxCollectionID.NONE;
-                                if (characterToReplace != BrcCharacter.None)
-                                {
-                                    _characterIds[(Characters)characterToReplace].Add(id);
-                                }
-                                else
-                                {
-                                    NewCharacterCount++;
-                                    Characters newCharacter = Characters.MAX + NewCharacterCount;
-                                    sfxID = SfxCollectionID.MAX + NewCharacterCount;
-
-                                    if (_characterIds.ContainsKey(newCharacter))
-                                    {
-                                        _characterIds[newCharacter].Add(id);
-                                    }
-                                    else
-                                    {
-                                        _characterIds.Add(newCharacter, new List<Guid>()
-                                        {
-                                            id
-                                        });
-                                    }
-                                }
-
-                                //Create a new custom character instance and store it
-                                CustomCharacter customCharacter = new CustomCharacter(characterDefinition, sfxID, characterToReplace != BrcCharacter.None);
-                                _customCharacters.Add(id, customCharacter);
-                            }
-                            else
-                            {
-                                DebugLog.LogError($"This character's GUID (\"{characterDefinition.Id}\") is invalid! Make sure their bundle was built correctly.");
-                            }
-                        }
-                        else
-                        {
-                            DebugLog.LogWarning($"The asset bundle at \"{filePath}\" does not have a CharacterDefinition. You may be trying to load a character that was made with a different version of this plugin.");
-                        }
-
-                        //bundle.Unload(false);
-                    }
+                    foundAtLeastOneCharacter = true;
+                }
+            }
+            foreach (string filePath in Directory.GetFiles(NO_CYPHER_PATH, "*.cbb"))
+            {
+                if (LoadCharacterBundle(filePath, false))
+                {
+                    foundAtLeastOneCharacter = true;
                 }
             }
 
             return foundAtLeastOneCharacter;
+        }
+
+        private static bool LoadCharacterBundle(string filePath, bool enableCypher)
+        {
+            bool success = false;
+
+            if (File.Exists(filePath) && Path.GetExtension(filePath) == ".cbb")
+            {
+                AssetBundle bundle = null;
+                try
+                {
+                    bundle = AssetBundle.LoadFromFile(filePath);
+                }
+                catch (Exception)
+                {
+                    DebugLog.LogWarning($"File at {filePath} is not a {PluginInfo.PLUGIN_NAME} character bundle, it will not be loaded");
+                }
+
+                if (bundle != null)
+                {
+                    GameObject[] objects = bundle.LoadAllAssets<GameObject>();
+                    CharacterDefinition characterDefinition = null;
+                    foreach (GameObject obj in objects)
+                    {
+                        characterDefinition = obj.GetComponent<CharacterDefinition>();
+                        if (characterDefinition != null)
+                        {
+                            break;
+                        }
+                    }
+                    if (characterDefinition != null)
+                    {
+                        string fileName = Path.GetFileName(filePath);
+
+                        BrcCharacter characterToReplace = BrcCharacter.None;
+
+                        string potentialConfigPath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + ".json");
+                        if (File.Exists(potentialConfigPath))
+                        {
+                            string configData = File.ReadAllText(potentialConfigPath);
+                            try
+                            {
+                                CharacterConfig config = JsonUtility.FromJson<CharacterConfig>(configData);
+                                if (Enum.TryParse(config.CharacterToReplace, out BrcCharacter newCharacterReplacement))
+                                {
+                                    characterToReplace = newCharacterReplacement;
+                                }
+                                else
+                                {
+                                    DebugLog.LogWarning($"The configured replacement character for the bundle {fileName} (\"{config.CharacterToReplace}\") is not a valid character!");
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                DebugLog.LogError($"Failed to read JSON config for \"{fileName}\"");
+                            }
+                        }
+
+                        StringBuilder characterLog = new StringBuilder();
+                        characterLog.Append($"Loading \"{characterDefinition.CharacterName}\"");
+                        if (characterToReplace == BrcCharacter.None)
+                        {
+                            characterLog.Append(" (additional character");
+                            if (!enableCypher)
+                            {
+                                characterLog.Append(", disabled in cypher");
+                            }
+                            characterLog.Append(')');
+                        }
+                        characterLog.Append("...");
+                        DebugLog.LogMessage(characterLog.ToString());
+
+                        if (Guid.TryParse(characterDefinition.Id, out Guid id))
+                        {
+                            DebugLog.LogInfo($"GUID: {id}");
+
+                            if (_characterBundlePaths.ContainsKey(id))
+                            {
+                                DebugLog.LogWarning($"Character's GUID already exists. Make sure to not have duplicate character bundles.");
+                                return false;
+                            }
+
+                            success = true;
+
+                            _characterBundlePaths.Add(id, filePath);
+
+                            SfxCollectionID sfxID = SfxCollectionID.NONE;
+                            if (characterToReplace != BrcCharacter.None)
+                            {
+                                _characterIds[(Characters)characterToReplace].Add(id);
+                            }
+                            else
+                            {
+                                NewCharacterCount++;
+
+                                Characters newCharacter = Characters.MAX + NewCharacterCount;
+                                sfxID = SfxCollectionID.MAX + NewCharacterCount;
+
+                                if (_characterIds.ContainsKey(newCharacter))
+                                {
+                                    _characterIds[newCharacter].Add(id);
+                                }
+                                else
+                                {
+                                    _characterIds.Add(newCharacter, new List<Guid>()
+                                    {
+                                        id
+                                    });
+                                }
+                                _cypherMapping.Add(id, enableCypher);
+                            }
+
+                            //Create a new custom character instance and store it
+                            CustomCharacter customCharacter = new CustomCharacter(characterDefinition, sfxID, characterToReplace != BrcCharacter.None);
+                            _customCharacters.Add(id, customCharacter);
+                        }
+                        else
+                        {
+                            DebugLog.LogError($"This character's GUID (\"{characterDefinition.Id}\") is invalid! Make sure their bundle was built correctly.");
+                        }
+                    }
+                    else
+                    {
+                        DebugLog.LogWarning($"The asset bundle at \"{filePath}\" does not have a CharacterDefinition. You may be trying to load a character that was made with a different version of this plugin.");
+                    }
+
+                    //bundle.Unload(false);
+                }
+            }
+
+            return success;
         }
 
         public static void SetOutfitShader(Shader shader)
@@ -436,6 +470,18 @@ namespace CrewBoom
             }
 
             return replacements != null && replacements.Count > 0;
+        }
+        public static bool HasCypherEnabledForCharacter(Characters character)
+        {
+            if (GetFirstOrConfigCharacterId(character, out Guid guid))
+            {
+                if (_cypherMapping.TryGetValue(guid, out bool enabled))
+                {
+                    return enabled;
+                }
+            }
+
+            return false;
         }
         public static bool GetCharacterValueFromGuid(Guid guid, out Characters character)
         {

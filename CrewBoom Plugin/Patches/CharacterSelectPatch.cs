@@ -25,7 +25,7 @@ namespace CrewBoom.Patches
             for (int i = max + 1; i <= max + CharacterDatabase.NewCharacterCount; i++)
             {
                 Characters character = (Characters)i;
-                if (playerCharacter != character)
+                if (playerCharacter != character && CharacterDatabase.HasCypherEnabledForCharacter(character))
                 {
                     ___selectableCharacters.Add(character);
                 }
