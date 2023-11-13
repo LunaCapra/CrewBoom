@@ -22,8 +22,8 @@ The plugin allows for the following:
 
 ## Downloads, instructions and help
 
-### [Plugin](https://github.com/SGiygas/CrewBoom/releases/download/v3.1.4/plugin.zip)
-### [Unity project](https://github.com/SGiygas/CrewBoom/releases/download/v3.1.4/unityProject.zip)
+### [Plugin](https://github.com/SGiygas/CrewBoom/releases/download/v3.2.0/plugin.zip)
+### [Unity project](https://github.com/SGiygas/CrewBoom/releases/download/v3.2.0/unityProject.zip)
 
 To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
 
@@ -60,7 +60,8 @@ Crew Boom is also available on the [Thunderstore](https://thunderstore.io/c/bomb
 ## Adding characters
 
 1. Navigate to your BepInEx installation for the game and open the `BepInEx/config/CrewBoom/` folder
-2. Copy any character bundle files (.cbb and .json) into the `CrewBoom` folder
+2. Copy your generated character files (.cbb and .json) into the `CrewBoom` folder
+3. **Optionally**, you can put the character files in `BepInEx/config/CrewBoom/no_cypher` to have characters only show up when synced via the API (SlopCrew) and not in your cypher selection.
 
 Optionally, you can edit/create a json file for your character to change whether they replace a character or not.  
 You can find instructions on how to do this [here](https://github.com/SGiygas/CrewBoom/wiki/Character-Configuration#editing-the-json-file)
