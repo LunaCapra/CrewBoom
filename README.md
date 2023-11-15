@@ -60,7 +60,7 @@ Crew Boom is also available on the [Thunderstore](https://thunderstore.io/c/bomb
 ## Adding characters
 
 1. Navigate to your BepInEx installation for the game and open the `BepInEx/config/CrewBoom/` folder
-2. Copy your generated character files (.cbb and .json) into the `CrewBoom` folder
+2. Copy your character files (.cbb and .json) into the `CrewBoom` folder
 3. **Optionally**, you can put the character files in `BepInEx/config/CrewBoom/no_cypher` to have characters only show up when synced via the API (SlopCrew) and not in your cypher selection.
 
 Optionally, you can edit/create a json file for your character to change whether they replace a character or not.  
