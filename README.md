@@ -22,8 +22,8 @@ The plugin allows for the following:
 
 ## Downloads, instructions and help
 
-### [Plugin](https://github.com/SGiygas/CrewBoom/releases/download/v3.2.0/plugin.zip)
-### [Unity project](https://github.com/SGiygas/CrewBoom/releases/download/v3.2.0/unityProject.zip)
+### [Plugin](https://github.com/SGiygas/CrewBoom/releases/download/v3.2.1/plugin.zip)
+### [Unity project](https://github.com/SGiygas/CrewBoom/releases/download/v3.2.1/unityProject.zip)
 
 To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
 
@@ -50,7 +50,7 @@ To install the plugin for BepInEx, follow these steps:
 Crew Boom is also available on the [Thunderstore](https://thunderstore.io/c/bomb-rush-cyberfunk/p/SoftGoat/CrewBoom/) to download directly from r2modman.  
 
 **Manual Install**
-1. Download the [plugin]()
+1. Download the [plugin](https://github.com/SGiygas/CrewBoom/releases/download/v3.2.1/plugin.zip)
 2. Open r2modman and select *Bomb Rush Cyberfunk* as the game and choose any profile
 3. Navigate to the *Settings* tab 
 4. Find the option labeled "Browse profile folder" and click it
