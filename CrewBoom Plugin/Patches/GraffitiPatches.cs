@@ -17,7 +17,9 @@ namespace CrewBoom.Patches
 
             GraffitiArtInfo info = (GraffitiArtInfo)graffitiArtInfoRequest.asset;
 
-            Shader shader = info.FindByCharacter(Characters.metalHead).graffitiMaterial.shader;
+            // Manually find specifically red's default graffiti because we patch FindByCharacter and Title
+            var redGraffiti = info.graffitiArt.Find(g => g.title == "Red");
+            Shader shader = redGraffiti.graffitiMaterial.shader;
             CharacterDatabase.SetGraffitiShader(shader);
 
             for (int i = 0; i < System.Enum.GetValues(typeof(Characters)).Length - 1; i++)

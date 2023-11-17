@@ -4,7 +4,7 @@
     <TargetFramework>net46</TargetFramework>
     <AssemblyName>CrewBoom</AssemblyName>
     <Description>A plugin to load custom skins and characters for Bomb Rush Cyberfunk.</Description>
-    <Version>3.2.1</Version>
+    <Version>3.2.2</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
