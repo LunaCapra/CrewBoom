@@ -19,11 +19,12 @@ namespace CrewBoom.Patches
             UnityEngine.UI.Image image = logo.AddComponent<UnityEngine.UI.Image>();
             image.sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
 
-            RectTransform transform = logo.RectTransform();
-            transform.sizeDelta = new Vector2(texture.width, texture.height);
-            float x = -__instance.transform.localPosition.x + texture.width * 0.5f;
-            float y = __instance.transform.localPosition.y - texture.height * 0.25f;
-            transform.localPosition = new Vector2(x + 32.0f, y - 32.0f);
+            RectTransform rect = logo.RectTransform();
+            rect.sizeDelta = new Vector2(texture.width, texture.height);
+            rect.anchorMin = new Vector2(0.0f, 1.0f);
+            rect.anchorMax = rect.anchorMin;
+            rect.pivot = rect.anchorMin;
+            rect.anchoredPosition = Vector2.one * 32.0f;
         }
     }
 }
