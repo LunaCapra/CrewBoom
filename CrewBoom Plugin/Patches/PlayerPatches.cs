@@ -1,5 +1,6 @@
 ﻿using BepInEx.Logging;
 using CrewBoom.Data;
+using CrewBoomAPI;
 using HarmonyLib;
 using Reptile;
 using System;
@@ -24,11 +25,25 @@ namespace CrewBoom.Patches
             }
         }
 
-        public static void Postfix()
+        public static void Postfix(Player __instance, Characters setChar)
         {
             if (CharacterDatabase.HasCharacterOverride)
             {
                 CharacterDatabase.SetCharacterOverrideDone();
+            }
+
+            if (__instance == WorldHandler.instance.GetCurrentPlayer())
+            {
+                if (CharacterDatabase.GetCharacter(setChar, out CustomCharacter character))
+                {
+                    var info = new CrewBoomAPI.CharacterInfo(character.Definition.CharacterName, character.Definition.GraffitiName);
+                    CrewBoomAPIDatabase.UpdatePlayerCharacter(info);
+                }
+                else
+                {
+                    CrewBoomAPIDatabase.UpdatePlayerCharacter(null);
+                }
+                Debug.Log(CrewBoomAPIDatabase.PlayerCharacterInfo.Name);
             }
         }
     }
@@ -43,7 +58,7 @@ namespace CrewBoom.Patches
                 return true;
             }
 
-            bool isAi = (bool)__instance.GetField("isAI").GetValue(__instance);
+            bool isAi = (bool) __instance.GetField("isAI").GetValue(__instance);
             if (!isAi)
             {
                 Core.Instance.SaveManager.CurrentSaveSlot.GetCharacterProgress(___character).outfit = setOutfit;
@@ -70,10 +85,10 @@ namespace CrewBoom.Patches
     {
         public static void Postfix(Player __instance, MoveStyle setMoveStyleEquipped)
         {
-            bool isAi = (bool)__instance.GetField("isAI").GetValue(__instance);
+            bool isAi = (bool) __instance.GetField("isAI").GetValue(__instance);
             if (!isAi)
             {
-                Characters character = (Characters)__instance.GetField("character").GetValue(__instance);
+                Characters character = (Characters) __instance.GetField("character").GetValue(__instance);
                 if (character > Characters.MAX)
                 {
                     if (CharacterDatabase.GetFirstOrConfigCharacterId(character, out Guid guid))
@@ -96,7 +111,7 @@ namespace CrewBoom.Patches
         {
             bool runOriginal = true;
 
-            bool isAI = (bool)__instance.GetField("isAI").GetValue(__instance);
+            bool isAI = (bool) __instance.GetField("isAI").GetValue(__instance);
             bool isNew = selectedCharacter > Characters.MAX;
             if (!isAI)
             {
