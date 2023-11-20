@@ -43,7 +43,6 @@ namespace CrewBoom.Patches
                 {
                     CrewBoomAPIDatabase.UpdatePlayerCharacter(null);
                 }
-                Debug.Log(CrewBoomAPIDatabase.PlayerCharacterInfo.Name);
             }
         }
     }
