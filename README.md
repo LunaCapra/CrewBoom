@@ -5,7 +5,7 @@
 This is a repository for a BepInEx plugin to load custom characters for the game *Bomb Rush Cyberfunk*  
 
 Example:  
-![image](https://github.com/LunaCapra/BrcCustomCharacters/assets/50772474/43ff8ca8-0805-4409-9547-234e26fcedda)
+![image](https://github.com/LunaCapra/CrewBoom/assets/50772474/43ff8ca8-0805-4409-9547-234e26fcedda)
 
 ## Features
 
