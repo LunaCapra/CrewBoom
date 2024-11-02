@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net46</TargetFramework>
+    <AssemblyName>CrewBoom</AssemblyName>
+    <Description>A plugin to load custom skins and characters for Bomb Rush Cyberfunk.</Description>
+    <Version>3.2.5</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="1.1.0" />
+    <PackageReference Include="UnityEngine.Modules" Version="2021.3.27" IncludeAssets="compile" />
+  </ItemGroup>
+  
+  <ItemGroup>
+	<Reference Include="Assembly-CSharp">
+		<HintPath>Libraries/Assembly-CSharp.dll</HintPath>
+	</Reference>
+	<Reference Include="Unity.TextMeshPro">
+		<HintPath>Libraries/Unity.TextMeshPro.dll</HintPath>
+	</Reference>
+	<Reference Include="CrewBoomMono">
+		<HintPath>Libraries/CrewBoomMono.dll</HintPath>
+	</Reference>
+	<Reference Include="CrewBoomAPI">
+		<HintPath>Libraries/CrewBoomAPI.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEngine.UI">
+	  <HintPath>..\..\..\..\..\..\..\..\Program Files\Unity\Hub\Editor\2021.3.27f1\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-8.1.3\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
