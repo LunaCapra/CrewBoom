@@ -1,6 +1,7 @@
 > [!IMPORTANT]
 > **This project is not actively being maintained.**  
 > If you need more help than [the documentation](https://github.com/LunaCapra/CrewBoom/wiki) can provide, please refer to [the Team Reptile Discord server's modding channel.](https://discord.com/invite/reptilehideout)  
+> I am only one person and will not be able to help you individually.
 
 ---
 
