@@ -1,9 +1,8 @@
-# If you need more help than the documentation can provide, please refer to [the Team Reptile Discord server and its modding channel.](https://discord.com/invite/reptilehideout)  
-# I am only one person and I cannot provide individual support for the many many people using my plugin.
+> [!IMPORTANT]
+> **This project is not actively being maintained.**  
+> If you need more help than [the documentation](https://github.com/LunaCapra/CrewBoom/wiki) can provide, please refer to [the Team Reptile Discord server's modding channel.](https://discord.com/invite/reptilehideout)  
 
-<p align="center">
-  <img src="https://github.com/LunaCapra/CrewBoom/assets/50772474/e182103f-bc06-4926-9313-4ecc122250e8" />
-</p>
+---
 
 This is a repository for a BepInEx plugin to load custom characters for the game *Bomb Rush Cyberfunk*  
 
@@ -25,13 +24,14 @@ The plugin allows for the following:
 
 ## Downloads, instructions and help
 
-### [Plugin](https://github.com/LunaCapra/CrewBoom/releases/download/v3.2.5/plugin.zip)
-### [Unity project](https://github.com/LunaCapra/CrewBoom/releases/download/v3.2.5/unityProject.zip)
+- [Plugin](https://github.com/LunaCapra/CrewBoom/releases/download/v3.2.5/plugin.zip)
+- [Unity project](https://github.com/LunaCapra/CrewBoom/releases/download/v3.2.5/unityProject.zip)  
 
-To create a character mod you will need both of these. If you just want to use a character you downloaded, you only need the plugin.  
-
-### [Documentation & Help here](https://github.com/LunaCapra/CrewBoom/wiki)
-### [Troubleshooting](https://github.com/LunaCapra/CrewBoom/wiki/Troubleshooting)
+- [How to use the plugin/project](https://github.com/LunaCapra/CrewBoom/wiki)
+- [Troubleshooting](https://github.com/LunaCapra/CrewBoom/wiki/Troubleshooting)
+> [!NOTE]
+> To create a character mod you will need both the **plugin *and* the Unity project**.
+> If you just want to use a character you downloaded, you only need the plugin.  
 
 ## Installation
 
@@ -73,8 +73,9 @@ You can find instructions on how to do this [here](https://github.com/LunaCapra/
 
 This pertains to if you want to build the plugin yourself, not the Unity project.  
 
-You will need to copy Bomb Rush Cyberfunk's `Assembly-CSharp.dll` into the `Libraries` folder of the project, as it is not provided.  
-It can be found at `<path to where your games are stored>\BombRushCyberfunk\Bomb Rush Cyberfunk_Data\Managed`
+> [!NOTE]
+> You will need to copy Bomb Rush Cyberfunk's `Assembly-CSharp.dll` into the `Libraries` folder of the project, as it is not provided.  
+> It can be found at `<path to where your games are stored>\BombRushCyberfunk\Bomb Rush Cyberfunk_Data\Managed`
 
 ## Authors and acknowledgment
 - Programming and Unity SDK: LunaCapra
